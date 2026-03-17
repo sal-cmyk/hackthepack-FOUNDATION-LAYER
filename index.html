@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hackthepack — Foundation Layer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0a;--s2:#111;--s3:#181818;
+  --bd:#222;--bh:#333;
+  --tx:#eee;--t2:#aaa;--t3:#666;
+  --gold:#FF7A00;--mag:#D0008F;--purp:#5A00FF;
+  --gold-d:rgba(255,122,0,.07);
+  --grad:linear-gradient(135deg,var(--gold),var(--mag),var(--purp));
+  --r:14px;--rs:10px;
+  --f:'DM Mono',monospace;--fs:'Instrument Serif',Georgia,serif;
+}
+body.day{
+  --bg:#FFF8F0;--s2:#FFF2E6;--s3:#FFE8D4;
+  --bd:#E8CDB0;--bh:#D4B090;
+  --tx:#2a1400;--t2:#7A5030;--t3:#B08060;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--f);background:var(--bg);color:var(--tx);overflow:hidden;width:100vw;height:100vh;-webkit-font-smoothing:antialiased;transition:all .5s}
+
+/* === SCREENS === */
+.scr{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column}
+.scr.on{display:flex}
+.logo{font-size:10px;font-weight:500;letter-spacing:5px;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:absolute;top:44px}
+
+/* QR */
+#S1{cursor:pointer;background:#000}
+.qf{width:180px;height:180px;position:relative;display:flex;align-items:center;justify-content:center}
+.qcr{position:absolute;width:22px;height:22px;border-style:solid}
+.qcr:nth-child(1){top:0;left:0;border-width:2px 0 0 2px;border-color:var(--gold)}
+.qcr:nth-child(2){top:0;right:0;border-width:2px 2px 0 0;border-color:var(--mag)}
+.qcr:nth-child(3){bottom:0;left:0;border-width:0 0 2px 2px;border-color:var(--mag)}
+.qcr:nth-child(4){bottom:0;right:0;border-width:0 2px 2px 0;border-color:var(--purp)}
+.qgrid{width:110px;height:110px;display:grid;grid-template-columns:repeat(8,1fr);gap:2px}
+.q1{border-radius:2px;background:var(--gold)}.q0{background:transparent}
+.qbeam{position:absolute;left:8px;right:8px;height:1px;background:var(--grad);box-shadow:0 0 12px rgba(255,122,0,.12);animation:bm 2.5s ease-in-out infinite}
+@keyframes bm{0%,100%{top:8px;opacity:.5}50%{top:calc(100% - 8px);opacity:1}}
+.qlabel{margin-top:36px;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:#555;animation:pu 3s ease-in-out infinite}
+@keyframes pu{0%,100%{opacity:.4}50%{opacity:1}}
+.dots{position:absolute;bottom:32px;display:flex;gap:6px}
+.dot{width:5px;height:5px;border-radius:50%;background:#444}
+.dot.active{background:var(--gold)}
+
+/* PACT */
+#S2{background:#000}
+.pact-box{width:400px;max-width:90vw}
+.pact-chip{display:inline-flex;align-items:center;gap:8px;padding:5px 13px;border:1px solid #333;border-radius:100px;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#888;margin-bottom:28px}
+.pact-pip{width:4px;height:4px;border-radius:50%;background:var(--gold)}
+.pact-h1{font-family:var(--fs);font-size:34px;line-height:1.2;margin-bottom:10px;color:#fff}
+.pact-sub{font-size:10px;color:#888;line-height:1.7;margin-bottom:36px}
+.pact-list{display:flex;flex-direction:column;gap:18px;margin-bottom:40px}
+.pact-row{display:flex;gap:14px;align-items:flex-start}
+.pact-num{width:26px;height:26px;min-width:26px;border-radius:50%;border:1px solid #333;display:flex;align-items:center;justify-content:center;font-size:9px;color:#555}
+.pact-txt{font-size:11px;line-height:1.7;color:#888}
+.pact-txt strong{color:#fff;font-weight:500}
+.accept-btn{width:100%;padding:15px;background:var(--gold);color:#000;border:none;border-radius:var(--rs);font-family:var(--f);font-size:10px;font-weight:500;letter-spacing:3px;text-transform:uppercase;cursor:pointer}
+.pact-foot{text-align:center;margin-top:18px;font-size:8px;color:#555}
+
+/* LOADING */
+#S3{background:var(--bg)}
+.load-wrap{display:flex;flex-direction:column;align-items:center;gap:20px}
+.load-ring{width:72px;height:72px;border-radius:50%;border:1px solid var(--bd);position:relative;display:flex;align-items:center;justify-content:center}
+.load-ring::before{content:'';position:absolute;inset:-2px;border-radius:50%;border:2px solid transparent;border-top-color:var(--gold);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-text{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--t3)}
+
+/* === STAGE === */
+#S4{flex-direction:row;transition:background .5s}
+
+/* Chrome */
+.chrome{position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:50;background:rgba(10,10,10,.5);backdrop-filter:blur(30px);border-bottom:1px solid var(--bd);transition:all .5s}
+body.day .chrome{background:rgba(255,248,240,.6)}
+.chrome-brand{font-size:10px;font-weight:500;letter-spacing:4px;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.chrome-btns{display:flex;gap:5px}
+.chrome-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--bd);background:transparent;color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;transition:all .3s}
+.chrome-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* Grid */
+.stage-grid{position:absolute;inset:50px 0 56px 0;display:grid;grid-template-columns:300px 1fr 300px;z-index:10}
+.panel{overflow-y:auto;padding:16px;scrollbar-width:none;display:flex;flex-direction:column;gap:10px}
+.panel::-webkit-scrollbar{display:none}
+.panel-l{border-right:1px solid var(--bd)}
+.panel-r{border-left:1px solid var(--bd)}
+
+/* Cards */
+.card{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:18px;transition:all .3s;scroll-margin-top:16px}
+.card:hover{border-color:var(--bh)}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-label{font-size:8px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--t3)}
+.tag{font-size:7px;padding:3px 9px;border-radius:100px;letter-spacing:1px;text-transform:uppercase}
+.tag-g{background:var(--gold-d);color:var(--gold);border:1px solid rgba(255,122,0,.12)}
+.tag-n{background:rgba(128,128,128,.06);color:var(--t2);border:1px solid var(--bd)}
+.card-body{font-size:10px;line-height:1.75;color:var(--t2)}
+
+/* Ingredient rows */
+.ingr{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd)}
+.ingr:last-child{border-bottom:none}
+.ingr-name{font-size:10px;color:var(--t2);display:flex;align-items:center;gap:8px}
+.ingr-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:.6}
+.ingr-fn{font-size:8px;color:var(--t3);letter-spacing:1px;text-transform:uppercase}
+
+.gtn{padding:8px 0;border-bottom:1px solid var(--bd);font-size:10px;color:var(--t2);line-height:1.7}
+.gtn:last-child{border-bottom:none}
+
+.enjoy{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--bd);font-size:10px;color:var(--t2)}
+.enjoy:last-child{border-bottom:none}
+.enjoy-n{width:22px;height:22px;border-radius:50%;border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--gold);flex-shrink:0}
+
+/* FTP card */
+.ftp-card{position:relative;overflow:hidden}
+.ftp-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
+.ftp-title{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.ftp-title span{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:500}
+.ftp-line{display:flex;align-items:center;gap:8px;font-size:9px;color:var(--t2);padding:4px 0}
+.ftp-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0}
+.ftp-link{font-size:8px;color:var(--t3);margin-top:10px;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+
+/* === CENTER — 3D VIEWER === */
+.center{display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;overflow:hidden}
+
+.spotlight{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.04) 0%,rgba(255,122,0,.02) 30%,transparent 60%);pointer-events:none;z-index:1}
+body.day .spotlight{background:radial-gradient(circle,rgba(255,200,150,.12) 0%,rgba(255,122,0,.04) 30%,transparent 60%)}
+
+.orbit{position:absolute;border-radius:50%;pointer-events:none;z-index:1}
+.orbit-1{width:280px;height:280px;border:1px solid rgba(255,122,0,.06);animation:orb 22s linear infinite}
+.orbit-2{width:350px;height:350px;border:1px solid rgba(208,0,143,.04);animation:orb 30s linear infinite reverse}
+.orbit-3{width:420px;height:420px;border:1px solid rgba(90,0,255,.025);animation:orb 38s linear infinite}
+@keyframes orb{to{transform:rotate(360deg)}}
+.orb-dot{position:absolute;width:5px;height:5px;border-radius:50%;filter:blur(.5px)}
+.od1{top:0;left:50%;margin-left:-2px;background:var(--gold)}
+.od2{top:50%;right:0;margin-top:-2px;background:var(--mag)}
+.od3{bottom:0;left:50%;margin-left:-2px;background:var(--purp)}
+
+model-viewer{
+  width:300px;height:360px;
+  background:transparent;outline:none;z-index:5;
+  --poster-color:transparent;
+}
+model-viewer::part(default-progress-bar){display:none}
+
+/* Info Ring — functional buttons */
+.ring-wrap{position:absolute;inset:0;pointer-events:none;z-index:20}
+.ring-btn{position:absolute;pointer-events:auto;display:flex;align-items:center;gap:5px;padding:6px 12px;background:rgba(10,10,10,.8);backdrop-filter:blur(16px);border:1px solid var(--bd);border-radius:100px;color:var(--t3);font-family:var(--f);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .3s;white-space:nowrap}
+body.day .ring-btn{background:rgba(255,248,240,.8)}
+.ring-btn:hover,.ring-btn.on{border-color:var(--gold);color:var(--gold);box-shadow:0 0 16px rgba(255,122,0,.06)}
+.ring-dot{width:3px;height:3px;border-radius:50%;background:currentColor}
+.ring-btn:nth-child(1){top:5%;left:50%;transform:translateX(-50%)}
+.ring-btn:nth-child(2){top:20%;right:2%}
+.ring-btn:nth-child(3){bottom:35%;right:0%}
+.ring-btn:nth-child(4){bottom:35%;left:0%}
+.ring-btn:nth-child(5){bottom:15%;left:0%}
+.ring-btn:nth-child(6){top:20%;left:2%}
+
+.prod-title{margin-top:6px;text-align:center;z-index:5}
+.prod-title h2{font-family:var(--fs);font-size:20px}
+.prod-title p{font-size:8px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;margin-top:3px}
+
+/* === REWARDED QUESTIONS === */
+.rq{position:relative;overflow:hidden}
+.rq::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad)}
+.rq-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.rq-type{font-size:8px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
+.rq-badge{font-size:8px;color:var(--gold);padding:3px 10px;border-radius:100px;background:var(--gold-d);border:1px solid rgba(255,122,0,.12)}
+.rq-q{font-family:var(--fs);font-size:15px;line-height:1.4;margin-bottom:12px}
+.rq-opts{display:flex;flex-direction:column;gap:5px}
+.rq-opt{padding:9px 12px;border-radius:var(--rs);border:1px solid var(--bd);background:var(--s2);color:var(--t2);font-family:var(--f);font-size:9px;cursor:pointer;transition:all .2s;text-align:left;display:flex;align-items:center;justify-content:space-between}
+.rq-opt:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-d)}
+.rq-pts{font-size:7px;color:var(--t3)}
+.rq-opt:hover .rq-pts{color:var(--gold)}
+.rq-skip{font-size:8px;color:var(--t3);margin-top:8px;text-align:center;cursor:pointer}
+.rq-result{display:none;text-align:center;padding:12px 0}
+.rq-thx{font-size:9px;color:var(--t2);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.rq-earned{font-size:28px;font-family:var(--fs);background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.rq-msg{font-size:9px;color:var(--t3);margin-top:4px}
+
+/* FAQ */
+.faq{padding:9px 0;border-bottom:1px solid var(--bd);cursor:pointer}
+.faq:last-child{border-bottom:none}
+.faq-q{font-size:10px;font-weight:500;display:flex;align-items:flex-start;gap:7px}
+.faq-q::before{content:'?';display:flex;align-items:center;justify-content:center;min-width:16px;height:16px;border-radius:50%;border:1px solid var(--bd);font-size:8px;color:var(--gold)}
+.faq-a{font-size:9px;color:var(--t3);line-height:1.7;padding-left:23px;max-height:0;overflow:hidden;transition:max-height .4s,opacity .3s;opacity:0}
+.faq.open .faq-a{max-height:200px;opacity:1;color:var(--t2)}
+
+/* Reviews */
+.rev{padding:9px 0;border-bottom:1px solid var(--bd)}
+.rev:last-child{border-bottom:none}
+.rev-top{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.rev-av{width:22px;height:22px;border-radius:50%;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:500;color:var(--gold);border:1px solid var(--bd)}
+.rev-name{font-size:9px;font-weight:500}
+.rev-stars{font-size:8px;color:var(--gold)}
+.rev-body{font-size:9px;color:var(--t3);line-height:1.5;padding-left:30px}
+
+/* Rewards */
+.rew-row{display:flex;align-items:baseline;gap:6px;margin-bottom:8px}
+.rew-num{font-family:var(--fs);font-size:28px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.rew-unit{font-size:8px;color:var(--t3);letter-spacing:2px;text-transform:uppercase}
+.rew-bar{display:flex;gap:2px}
+.rew-seg{flex:1;height:3px;border-radius:2px;background:var(--bd)}
+.rew-seg.filled{background:var(--gold)}
+
+/* === BOTTOM BAR — FUNCTIONAL === */
+.bottom{position:absolute;bottom:0;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:center;gap:8px;z-index:50;background:rgba(10,10,10,.5);backdrop-filter:blur(30px);border-top:1px solid var(--bd);transition:all .5s}
+body.day .bottom{background:rgba(255,248,240,.6)}
+.bot-btn{padding:7px 14px;border-radius:100px;border:1px solid var(--bd);background:transparent;color:var(--t3);font-family:var(--f);font-size:8px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .3s}
+.bot-btn:hover{border-color:var(--gold);color:var(--gold)}
+.bot-btn.hacka-btn{background:linear-gradient(135deg,var(--gold),var(--mag),var(--purp));border:none;color:#fff;font-weight:500;padding:8px 20px;box-shadow:0 0 20px rgba(208,0,143,.15)}
+.bot-dot{width:3px;height:3px;border-radius:50%;background:currentColor}
+
+/* === hacKa DRAWER === */
+.hacka-overlay{position:fixed;inset:0;z-index:200;display:flex;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity .35s}
+.hacka-overlay.open{opacity:1;pointer-events:auto}
+.hacka-bg{position:absolute;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(8px)}
+.hacka-drawer{position:relative;width:360px;max-width:95vw;height:100vh;background:#080808;border-left:1px solid #222;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .5s;z-index:1}
+.hacka-overlay.open .hacka-drawer{transform:translateX(0)}
+.hacka-top{padding:16px;border-bottom:1px solid #222;display:flex;align-items:center;justify-content:space-between}
+.hacka-id{display:flex;align-items:center;gap:10px}
+.hacka-av{width:34px;height:34px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#fff}
+.hacka-nm h3{font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:#fff}
+.hacka-nm p{font-size:7px;color:#555;margin-top:1px}
+.hacka-mode{font-size:7px;padding:3px 7px;border-radius:100px;border:1px solid rgba(255,122,0,.15);color:var(--gold);background:rgba(255,122,0,.07)}
+.hacka-close{width:24px;height:24px;border-radius:50%;border:1px solid #333;background:transparent;color:#666;cursor:pointer;font-size:12px;font-family:var(--f);display:flex;align-items:center;justify-content:center}
+.hacka-chat{flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;scrollbar-width:none}
+.hacka-chat::-webkit-scrollbar{display:none}
+.msg{max-width:88%;padding:10px 13px;border-radius:var(--r);font-size:10px;line-height:1.7}
+.msg-h{background:#111;border:1px solid #222;color:#999;align-self:flex-start;border-bottom-left-radius:3px}
+.msg-u{background:rgba(255,122,0,.07);border:1px solid rgba(255,122,0,.1);color:var(--gold);align-self:flex-end;border-bottom-right-radius:3px}
+.hacka-sug{display:flex;flex-wrap:wrap;gap:4px;padding:0 16px 6px}
+.sug{padding:5px 9px;border-radius:100px;border:1px solid #333;background:transparent;color:#666;font-family:var(--f);font-size:7px;cursor:pointer}
+.sug:hover{border-color:var(--gold);color:var(--gold)}
+.hacka-input-row{padding:10px 16px 16px;border-top:1px solid #222;display:flex;gap:6px}
+.hacka-input{flex:1;padding:9px 11px;background:#111;border:1px solid #222;border-radius:var(--rs);color:#fff;font-family:var(--f);font-size:9px;outline:none}
+.hacka-input:focus{border-color:var(--gold)}
+.hacka-send{width:36px;height:36px;border-radius:var(--rs);background:var(--gold);border:none;color:#000;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center}
+.typing{display:flex;gap:3px}
+.typing span{width:4px;height:4px;background:#444;border-radius:50%;animation:tb 1.2s ease-in-out infinite}
+.typing span:nth-child(2){animation-delay:.15s}
+.typing span:nth-child(3){animation-delay:.3s}
+@keyframes tb{0%,100%{opacity:.3}50%{opacity:1}}
+
+/* Highlight animation for scrolling */
+@keyframes highlight{0%{box-shadow:0 0 0 2px var(--gold)}100%{box-shadow:none}}
+.card.highlighted{animation:highlight 1.5s ease}
+
+@media(max-width:1024px){
+  .stage-grid{grid-template-columns:1fr;overflow-y:auto}
+  .panel-l,.panel-r{border:none}
+  .center{min-height:460px;order:-1}
+  .ring-wrap{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- S1: QR -->
+<div class="scr on" id="S1">
+  <span class="logo">hackthepack</span>
+  <div class="qf">
+    <div class="qcr"></div><div class="qcr"></div><div class="qcr"></div><div class="qcr"></div>
+    <div class="qgrid" id="qgrid"></div>
+    <div class="qbeam"></div>
+  </div>
+  <div class="qlabel">scan to begin</div>
+  <div class="dots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+
+<!-- S2: PACT -->
+<div class="scr" id="S2">
+  <span class="logo">hackthepack</span>
+  <div class="pact-box">
+    <div class="pact-chip"><span class="pact-pip"></span> Fair Trade Pact</div>
+    <div class="pact-h1">Our commitment<br>to you.</div>
+    <div class="pact-sub">Before we begin, here's what we promise.</div>
+    <div class="pact-list">
+      <div class="pact-row"><div class="pact-num">01</div><div class="pact-txt"><strong>Your data belongs to you.</strong> View, export, delete anytime.</div></div>
+      <div class="pact-row"><div class="pact-num">02</div><div class="pact-txt"><strong>Full transparency.</strong> Every ingredient verified.</div></div>
+      <div class="pact-row"><div class="pact-num">03</div><div class="pact-txt"><strong>Fair value exchange.</strong> Insights earn rewards.</div></div>
+      <div class="pact-row"><div class="pact-num">04</div><div class="pact-txt"><strong>Ethical intelligence.</strong> Never manipulation.</div></div>
+    </div>
+    <button class="accept-btn" id="acceptBtn">I Accept</button>
+    <div class="pact-foot">Manage your data at any time.</div>
+  </div>
+  <div class="dots"><div class="dot active"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+
+<!-- S3: LOADING -->
+<div class="scr" id="S3">
+  <div class="load-wrap">
+    <div class="load-ring"><span style="font-size:22px">📦</span></div>
+    <div class="load-text">Activating product</div>
+  </div>
+</div>
+
+<!-- S4: THE STAGE -->
+<div class="scr" id="S4">
+  <div class="chrome">
+    <span class="chrome-brand">hackthepack</span>
+    <div class="chrome-btns">
+      <button class="chrome-btn">🌐</button>
+      <button class="chrome-btn" id="modeBtn">☀️</button>
+      <button class="chrome-btn">↗</button>
+      <button class="chrome-btn">✕</button>
+    </div>
+  </div>
+
+  <div class="stage-grid">
+    <!-- LEFT PANEL -->
+    <div class="panel panel-l" id="panelL">
+      <div class="card" id="card-about">
+        <div class="card-head"><span class="card-label">About this product</span></div>
+        <div class="card-body">Cola is a carbonated soft drink. Sweetness, acidity, and natural flavor extracts create its distinctive profile.</div>
+      </div>
+
+      <div class="card" id="card-ingredients">
+        <div class="card-head"><span class="card-label">What's inside</span><span class="tag tag-g">Verified</span></div>
+        <div class="ingr"><span class="ingr-name"><span class="ingr-dot"></span> Carbonated Water</span><span class="ingr-fn">Fizz</span></div>
+        <div class="ingr"><span class="ingr-name"><span class="ingr-dot"></span> Sweeteners</span><span class="ingr-fn">Taste</span></div>
+        <div class="ingr"><span class="ingr-name"><span class="ingr-dot"></span> Caramel Color</span><span class="ingr-fn">Color</span></div>
+        <div class="ingr"><span class="ingr-name"><span class="ingr-dot"></span> Phosphoric Acid</span><span class="ingr-fn">Tang</span></div>
+        <div class="ingr"><span class="ingr-name"><span class="ingr-dot"></span> Natural Flavors</span><span class="ingr-fn">DNA</span></div>
+        <div class="ingr"><span class="ingr-name"><span class="ingr-dot"></span> Caffeine</span><span class="ingr-fn">Energy</span></div>
+      </div>
+
+      <div class="card" id="card-goodtoknow">
+        <div class="card-head"><span class="card-label">Good to know</span></div>
+        <div class="gtn">35g sugar per 330ml. Moderation recommended.</div>
+        <div class="gtn">Zero-sugar versions available.</div>
+      </div>
+
+      <div class="card" id="card-enjoy">
+        <div class="card-head"><span class="card-label">Best way to enjoy</span></div>
+        <div class="enjoy"><div class="enjoy-n">01</div><span>Ice cold</span></div>
+        <div class="enjoy"><div class="enjoy-n">02</div><span>With burgers, pizza, BBQ</span></div>
+        <div class="enjoy"><div class="enjoy-n">03</div><span>Mid-afternoon pick-me-up</span></div>
+      </div>
+
+    </div>
+
+    <!-- CENTER -->
+    <div class="center">
+      <div class="spotlight"></div>
+      <div class="orbit orbit-1"><div class="orb-dot od1"></div></div>
+      <div class="orbit orbit-2"><div class="orb-dot od2"></div></div>
+      <div class="orbit orbit-3"><div class="orb-dot od3"></div></div>
+
+      <model-viewer
+        src="can.glb"
+        camera-controls
+        disable-pan
+        disable-zoom
+        auto-rotate
+        auto-rotate-delay="1500"
+        rotation-per-second="15deg"
+        camera-orbit="0deg 75deg 105%"
+        min-camera-orbit="auto 65deg auto"
+        max-camera-orbit="auto 85deg auto"
+        field-of-view="35deg"
+        shadow-intensity="0.7"
+        shadow-softness="0.9"
+        exposure="2.4"
+        environment-image="neutral"
+        interaction-prompt="none"
+        loading="lazy"
+        reveal="auto"
+      ></model-viewer>
+
+      <div class="ring-wrap">
+        <div class="ring-btn on" data-target="card-about"><span class="ring-dot"></span> About</div>
+        <div class="ring-btn" data-target="card-faq"><span class="ring-dot"></span> FAQ</div>
+        <div class="ring-btn" data-target="card-reviews"><span class="ring-dot"></span> Reviews</div>
+        <div class="ring-btn" data-target="card-enjoy"><span class="ring-dot"></span> Enjoy</div>
+        <div class="ring-btn" data-target="card-goodtoknow"><span class="ring-dot"></span> Good to Know</div>
+        <div class="ring-btn" data-target="card-ingredients"><span class="ring-dot"></span> Ingredients</div>
+      </div>
+
+      <div class="prod-title">
+        <h2>Cola Original</h2>
+        <p>330ml · Scan & Activate</p>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="panel panel-r" id="panelR">
+      <!-- FAIR TRADE DEAL -->
+      <div class="card" id="card-ftdeal" style="position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="var c=document.getElementById('ftdContent');c.style.display=c.style.display==='none'?'block':'none'">
+          <span style="font-size:8px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gold)">🎁 Fair Trade Deal</span>
+          <span style="font-size:7px;padding:3px 8px;border-radius:100px;background:var(--gold-d);border:1px solid rgba(255,122,0,.12);color:var(--gold)">Participate</span>
+        </div>
+        <div id="ftdContent" style="display:none;margin-top:14px">
+          <div style="font-family:var(--fs);font-size:14px;line-height:1.4;margin-bottom:12px">We're launching Cola Limão. What would make you try it?</div>
+          <div class="rq-opts" id="rq-ftp-opts">
+            <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>Brand loyalty — I'll try anything new</span><span class="rq-pts">🎁</span></button>
+            <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>A friend's recommendation</span><span class="rq-pts">🎁</span></button>
+            <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>Free sample with my purchase</span><span class="rq-pts">🎁</span></button>
+            <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>Seeing the ingredients first</span><span class="rq-pts">🎁</span></button>
+          </div>
+          <div style="font-size:8px;color:var(--t3);margin-top:10px;text-align:center;cursor:pointer" onclick="document.getElementById('card-ftdeal').style.opacity='.3';document.getElementById('card-ftdeal').style.pointerEvents='none'">Decline — always optional</div>
+          <div class="rq-result" id="rq-ftp-result"><div class="rq-thx">You earned a reward!</div><div class="rq-earned">🎁 12-Pack</div><div class="rq-msg">Cola Limão 12-pack is yours.</div></div>
+        </div>
+      </div>
+
+      <!-- LET'S PLAY -->
+      <div class="card" id="card-play" style="position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(135deg,var(--mag),var(--purp))"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="var c=document.getElementById('playContent');c.style.display=c.style.display==='none'?'block':'none'">
+          <span style="font-size:8px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--mag)">🎮 Let's Play</span>
+          <span style="font-size:7px;padding:3px 8px;border-radius:100px;background:rgba(208,0,143,.08);border:1px solid rgba(208,0,143,.12);color:var(--mag)">Gamification</span>
+        </div>
+        <div id="playContent" style="display:none;margin-top:14px">
+          <div style="font-family:var(--fs);font-size:14px;line-height:1.4;margin-bottom:10px">Unlock a game inside this pack.</div>
+          <div style="padding:16px;border-radius:var(--rs);border:1px dashed var(--bd);text-align:center">
+            <div style="font-size:28px;margin-bottom:8px">📱</div>
+            <div style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--mag)">Point camera at can</div>
+            <div style="font-size:7px;color:var(--t3);margin-top:4px">AR · Coming soon</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rewarded Q1 -->
+      <div class="card rq" id="rq-cola">
+        <div class="rq-head"><span class="rq-type">Rewarded Question</span><span class="rq-badge">⭐ +15</span></div>
+        <div class="rq-q">When you reach for a cola, what are you looking for?</div>
+        <div class="rq-opts" id="rq-cola-opts">
+          <button class="rq-opt" onclick="answerRQ('rq-cola',15)"><span>A treat or reward</span><span class="rq-pts">+15</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-cola',15)"><span>An energy boost</span><span class="rq-pts">+15</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-cola',15)"><span>A familiar taste</span><span class="rq-pts">+15</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-cola',15)"><span>A social moment</span><span class="rq-pts">+15</span></button>
+        </div>
+        <div class="rq-skip" onclick="skipRQ('rq-cola')">Skip — always optional</div>
+        <div class="rq-result" id="rq-cola-result"><div class="rq-thx">Thank you!</div><div class="rq-earned">+15</div><div class="rq-msg">Your insight improves this product.</div></div>
+      </div>
+
+      <!-- Rewarded Q2 -->
+      <div class="card rq" id="rq-ingr">
+        <div class="rq-head"><span class="rq-type">Rewarded Question</span><span class="rq-badge">⭐ +20</span></div>
+        <div class="rq-q">Which ingredient concerns you most?</div>
+        <div class="rq-opts" id="rq-ingr-opts">
+          <button class="rq-opt" onclick="answerRQ('rq-ingr',20)"><span>Sugar content</span><span class="rq-pts">+20</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-ingr',20)"><span>Artificial sweeteners</span><span class="rq-pts">+20</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-ingr',20)"><span>Phosphoric acid</span><span class="rq-pts">+20</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-ingr',20)"><span>Caffeine</span><span class="rq-pts">+20</span></button>
+        </div>
+        <div class="rq-skip" onclick="skipRQ('rq-ingr')">Skip — always optional</div>
+        <div class="rq-result" id="rq-ingr-result"><div class="rq-thx">Thank you!</div><div class="rq-earned">+20</div><div class="rq-msg">Helps us address real concerns.</div></div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="card" id="card-faq">
+        <div class="card-head"><span class="card-label">FAQ</span><span class="tag tag-n">5</span></div>
+        <div class="faq" onclick="this.classList.toggle('open')"><div class="faq-q">How much sugar?</div><div class="faq-a">~35g per can (8.5 tsp). WHO recommends max 25g/day.</div></div>
+        <div class="faq" onclick="this.classList.toggle('open')"><div class="faq-q">Why do brands taste different?</div><div class="faq-a">Each uses unique proprietary blends of natural flavors.</div></div>
+        <div class="faq" onclick="this.classList.toggle('open')"><div class="faq-q">Is zero sugar healthier?</div><div class="faq-a">Fewer calories, but contains alternative sweeteners.</div></div>
+        <div class="faq" onclick="this.classList.toggle('open')"><div class="faq-q">What does phosphoric acid do?</div><div class="faq-a">Provides the tangy finish that balances sweetness.</div></div>
+        <div class="faq" onclick="this.classList.toggle('open')"><div class="faq-q">Where does cola flavor come from?</div><div class="faq-a">Vanilla, cinnamon, citrus oils in a proprietary formula.</div></div>
+      </div>
+
+      <!-- Reviews -->
+      <div class="card" id="card-reviews">
+        <div class="card-head"><span class="card-label">Reviews</span><span class="tag tag-n">2,840+</span></div>
+        <div class="rev"><div class="rev-top"><div class="rev-av">M</div><div><span class="rev-name">Marcos P.</span><br><span class="rev-stars">★★★★★</span></div></div><div class="rev-body">Nothing beats this on a hot day.</div></div>
+        <div class="rev"><div class="rev-top"><div class="rev-av">L</div><div><span class="rev-name">Luciana R.</span><br><span class="rev-stars">★★★★☆</span></div></div><div class="rev-body">Perfect carbonation. Great taste.</div></div>
+        <div class="rev"><div class="rev-top"><div class="rev-av">D</div><div><span class="rev-name">Diego S.</span><br><span class="rev-stars">★★★★★</span></div></div><div class="rev-body">Best with pizza. Ice cold.</div></div>
+      </div>
+
+      <!-- Rewards -->
+      <div class="card" id="card-rewards">
+        <div class="card-head"><span class="card-label">My Rewards</span><span class="tag tag-g">Active</span></div>
+        <div class="rew-row"><span class="rew-num" id="pointsDisplay">420</span><span class="rew-unit">points</span></div>
+        <div class="rew-bar">
+          <div class="rew-seg filled"></div><div class="rew-seg filled"></div><div class="rew-seg filled"></div><div class="rew-seg filled"></div>
+          <div class="rew-seg"></div><div class="rew-seg"></div><div class="rew-seg"></div><div class="rew-seg"></div><div class="rew-seg"></div><div class="rew-seg"></div>
+        </div>
+        <div style="font-size:8px;color:var(--t3);margin-top:8px">80 points to next reward</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM BAR — ALL BUTTONS FUNCTIONAL -->
+  <div class="bottom">
+    <button class="bot-btn" onclick="scrollToCard('card-ingredients','panelL')"><span class="bot-dot"></span> Ingredients</button>
+    <button class="bot-btn" onclick="scrollToCard('card-reviews','panelR')"><span class="bot-dot"></span> Reviews</button>
+    <button class="bot-btn" onclick="scrollToCard('card-faq','panelR')"><span class="bot-dot"></span> FAQ</button>
+    <button class="bot-btn hacka-btn" id="openHackaBtn"><span class="bot-dot"></span> Talk to hacKa</button>
+  </div>
+</div>
+
+<!-- hacKa DRAWER -->
+<div class="hacka-overlay" id="hackaOverlay">
+  <div class="hacka-bg" id="hackaBg"></div>
+  <div class="hacka-drawer">
+    <div class="hacka-top">
+      <div class="hacka-id">
+        <div class="hacka-av">h</div>
+        <div class="hacka-nm"><h3>hacKa</h3><p>Intelligent Companion</p></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span class="hacka-mode">Guide</span>
+        <button class="hacka-close" id="closeHackaBtn">✕</button>
+      </div>
+    </div>
+    <div class="hacka-chat" id="hackaChat">
+      <div class="msg msg-h">Hi! I'm hacKa, your product companion. I can explain any ingredient, answer questions, or help you explore this product. What would you like to know?</div>
+    </div>
+    <div class="hacka-sug">
+      <button class="sug" onclick="askHacka('phosphoric')">Phosphoric acid?</button>
+      <button class="sug" onclick="askHacka('flavors')">Natural flavors?</button>
+      <button class="sug" onclick="askHacka('sugar')">35g sugar?</button>
+      <button class="sug" onclick="askHacka('zero')">Regular vs zero</button>
+    </div>
+    <div class="hacka-input-row">
+      <input class="hacka-input" id="hackaInput" placeholder="Ask hacKa anything...">
+      <button class="hacka-send" id="hackaSendBtn">→</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// === NAVIGATION ===
+function goTo(id) {
+  var screens = document.querySelectorAll('.scr');
+  for (var i = 0; i < screens.length; i++) screens[i].classList.remove('on');
+  document.getElementById(id).classList.add('on');
+}
+
+document.getElementById('S1').onclick = function() { goTo('S2'); };
+document.getElementById('acceptBtn').onclick = function(e) {
+  e.stopPropagation();
+  goTo('S3');
+  setTimeout(function() { goTo('S4'); }, 1800);
+};
+
+// === QR GRID ===
+var qg = document.getElementById('qgrid');
+[1,1,1,0,0,1,1,1,1,0,1,1,0,1,0,1,1,1,1,0,1,1,1,1,0,1,0,1,1,0,1,0,1,0,1,1,0,1,0,1,1,1,0,0,1,0,1,1,0,1,1,0,1,1,0,0,1,1,1,0,1,1,1,1].forEach(function(v) {
+  var c = document.createElement('div');
+  c.className = v ? 'q1' : 'q0';
+  qg.appendChild(c);
+});
+
+// === DAY/NIGHT MODE ===
+var isDark = true;
+document.getElementById('modeBtn').onclick = function() {
+  isDark = !isDark;
+  document.body.classList.toggle('day');
+  this.textContent = isDark ? '☀️' : '🌙';
+};
+
+// === RING BUTTONS — SCROLL TO CARDS ===
+var ringBtns = document.querySelectorAll('.ring-btn');
+for (var i = 0; i < ringBtns.length; i++) {
+  ringBtns[i].onclick = function() {
+    // Highlight active
+    for (var j = 0; j < ringBtns.length; j++) ringBtns[j].classList.remove('on');
+    this.classList.add('on');
+    // Scroll to target card
+    var targetId = this.getAttribute('data-target');
+    var target = document.getElementById(targetId);
+    if (target) {
+      // Determine which panel the card is in
+      var panel = target.closest('.panel');
+      if (panel) {
+        target.classList.add('highlighted');
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(function() { target.classList.remove('highlighted'); }, 1500);
+      }
+    }
+  };
+}
+
+// === BOTTOM BAR — SCROLL TO CARDS ===
+function scrollToCard(cardId, panelId) {
+  var card = document.getElementById(cardId);
+  if (card) {
+    card.classList.add('highlighted');
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(function() { card.classList.remove('highlighted'); }, 1500);
+  }
+}
+
+// === REWARDED QUESTIONS ===
+var totalPoints = 420;
+function answerRQ(id, pts) {
+  document.getElementById(id + '-opts').style.display = 'none';
+  var skip = document.querySelector('#' + id + ' .rq-skip');
+  if (skip) skip.style.display = 'none';
+  document.getElementById(id + '-result').style.display = 'block';
+  totalPoints += pts;
+  document.getElementById('pointsDisplay').textContent = totalPoints;
+}
+function skipRQ(id) {
+  document.getElementById(id).style.opacity = '.3';
+  document.getElementById(id).style.pointerEvents = 'none';
+}
+
+// === hacKa ===
+document.getElementById('openHackaBtn').onclick = function() {
+  document.getElementById('hackaOverlay').classList.add('open');
+};
+document.getElementById('closeHackaBtn').onclick = function() {
+  document.getElementById('hackaOverlay').classList.remove('open');
+};
+document.getElementById('hackaBg').onclick = function() {
+  document.getElementById('hackaOverlay').classList.remove('open');
+};
+
+var knowledge = {
+  phosphoric: "That crisp tangy finish in cola? That's Phosphoric Acid. It balances the sweetness, makes it feel refreshing, and keeps the flavor from going flat. Also acts as a natural preservative.",
+  flavors: "This is the brand's 'DNA' — the unique recipe that makes it taste like this cola and no other. A blend of extracts: spices, citrus oils, vanilla, and other plant-derived ingredients.",
+  sugar: "A 330ml can contains about 35g of sugar — roughly 8.5 teaspoons. The WHO recommends no more than 25g per day. Zero-sugar versions eliminate this entirely.",
+  zero: "Regular: 35g sugar, 140 calories. Zero: alternative sweeteners, effectively zero calories. Same phosphoric acid, caffeine, and natural flavors. Some notice a slight mouthfeel difference."
+};
+
+function askHacka(key) {
+  addMsg(key, 'msg-u');
+  showTyping(function() {
+    addMsg(knowledge[key] || "Every ingredient serves a specific purpose. Want me to break down something specific?", 'msg-h');
+  });
+}
+
+document.getElementById('hackaSendBtn').onclick = sendUserMsg;
+document.getElementById('hackaInput').onkeydown = function(e) {
+  if (e.key === 'Enter') sendUserMsg();
+};
+
+function sendUserMsg() {
+  var field = document.getElementById('hackaInput');
+  var text = field.value.trim();
+  if (!text) return;
+  field.value = '';
+  addMsg(text, 'msg-u');
+  showTyping(function() {
+    addMsg("Good question. Each ingredient in this product works in balance — carbonation for fizz, acidity for that refreshing finish, and natural extracts for the signature taste. Want me to go deeper into any specific one?", 'msg-h');
+  });
+}
+
+function addMsg(text, cls) {
+  var chat = document.getElementById('hackaChat');
+  var msg = document.createElement('div');
+  msg.className = 'msg ' + cls;
+  msg.textContent = text;
+  chat.appendChild(msg);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function showTyping(callback) {
+  var chat = document.getElementById('hackaChat');
+  var indicator = document.createElement('div');
+  indicator.className = 'msg msg-h';
+  indicator.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  chat.appendChild(indicator);
+  chat.scrollTop = chat.scrollHeight;
+  setTimeout(function() {
+    indicator.remove();
+    callback();
+  }, 1200);
+}
+</script>
+
+<!-- Model Viewer loads LAST — never blocks navigation -->
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+</body>
+</html>
