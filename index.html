@@ -7,11 +7,11 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0a0a0a;--s2:#111;--s3:#181818;
-  --bd:#222;--bh:#333;
-  --tx:#eee;--t2:#aaa;--t3:#666;
+  --bg:#060606;--s2:#0e0e0e;--s3:#151515;
+  --bd:#1a1a1a;--bh:#2a2a2a;
+  --tx:#f0f0f0;--t2:#999;--t3:#555;
   --gold:#FF7A00;--mag:#D0008F;--purp:#5A00FF;
-  --gold-d:rgba(255,122,0,.07);
+  --gold-d:rgba(255,122,0,.06);
   --grad:linear-gradient(135deg,var(--gold),var(--mag),var(--purp));
   --r:14px;--rs:10px;
   --f:'DM Mono',monospace;--fs:'Instrument Serif',Georgia,serif;
@@ -74,8 +74,8 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);overflow:hidden;w
 #S4{flex-direction:row;transition:background .5s}
 
 /* Chrome */
-.chrome{position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:50;background:rgba(10,10,10,.5);backdrop-filter:blur(30px);border-bottom:1px solid var(--bd);transition:all .5s}
-body.day .chrome{background:rgba(255,248,240,.6)}
+.chrome{position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:50;background:rgba(6,6,6,.7);backdrop-filter:blur(40px);border-bottom:1px solid rgba(255,255,255,.04);transition:all .5s}
+body.day .chrome{background:rgba(255,248,240,.7);border-bottom:1px solid rgba(0,0,0,.06)}
 .chrome-brand{font-size:10px;font-weight:500;letter-spacing:4px;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .chrome-btns{display:flex;gap:5px}
 .chrome-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--bd);background:transparent;color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;transition:all .3s}
@@ -90,7 +90,7 @@ body.day .chrome{background:rgba(255,248,240,.6)}
 
 /* Cards */
 .card{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:18px;transition:all .3s;scroll-margin-top:16px}
-.card:hover{border-color:var(--bh)}
+.card:hover{border-color:var(--bh);box-shadow:0 2px 20px rgba(0,0,0,.3)}
 .card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .card-label{font-size:8px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--t3)}
 .tag{font-size:7px;padding:3px 9px;border-radius:100px;letter-spacing:1px;text-transform:uppercase}
@@ -124,8 +124,8 @@ body.day .chrome{background:rgba(255,248,240,.6)}
 /* === CENTER — 3D VIEWER === */
 .center{display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;overflow:hidden}
 
-.spotlight{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.04) 0%,rgba(255,122,0,.02) 30%,transparent 60%);pointer-events:none;z-index:1}
-body.day .spotlight{background:radial-gradient(circle,rgba(255,200,150,.12) 0%,rgba(255,122,0,.04) 30%,transparent 60%)}
+.spotlight{position:absolute;width:550px;height:550px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.05) 0%,rgba(255,122,0,.025) 25%,rgba(208,0,143,.01) 45%,transparent 65%);pointer-events:none;z-index:1}
+body.day .spotlight{background:radial-gradient(circle,rgba(255,200,150,.15) 0%,rgba(255,122,0,.05) 25%,transparent 55%)}
 
 .orbit{position:absolute;border-radius:50%;pointer-events:none;z-index:1}
 .orbit-1{width:280px;height:280px;border:1px solid rgba(255,122,0,.06);animation:orb 22s linear infinite}
@@ -205,8 +205,8 @@ body.day .ring-btn{background:rgba(255,248,240,.8)}
 .rew-seg.filled{background:var(--gold)}
 
 /* === BOTTOM BAR — FUNCTIONAL === */
-.bottom{position:absolute;bottom:0;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:center;gap:8px;z-index:50;background:rgba(10,10,10,.5);backdrop-filter:blur(30px);border-top:1px solid var(--bd);transition:all .5s}
-body.day .bottom{background:rgba(255,248,240,.6)}
+.bottom{position:absolute;bottom:0;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:center;gap:8px;z-index:50;background:rgba(6,6,6,.7);backdrop-filter:blur(40px);border-top:1px solid rgba(255,255,255,.04);transition:all .5s}
+body.day .bottom{background:rgba(255,248,240,.7);border-top:1px solid rgba(0,0,0,.06)}
 .bot-btn{padding:7px 14px;border-radius:100px;border:1px solid var(--bd);background:transparent;color:var(--t3);font-family:var(--f);font-size:8px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .3s}
 .bot-btn:hover{border-color:var(--gold);color:var(--gold)}
 .bot-btn.hacka-btn{background:linear-gradient(135deg,rgba(208,0,143,.05),rgba(90,0,255,.05));border-color:rgba(208,0,143,.15);color:var(--mag)}
@@ -360,15 +360,16 @@ body.day .bottom{background:rgba(255,248,240,.6)}
         camera-controls
         auto-rotate
         auto-rotate-delay="0"
-        rotation-per-second="15deg"
+        rotation-per-second="12deg"
         camera-orbit="0deg 75deg 1.8m"
         min-camera-orbit="auto auto 1m"
         max-camera-orbit="auto auto 3.5m"
-        field-of-view="35deg"
-        shadow-intensity="0.7"
-        shadow-softness="0.9"
-        exposure="1.6"
+        field-of-view="32deg"
+        shadow-intensity="0.9"
+        shadow-softness="0.8"
+        exposure="1.8"
         environment-image="neutral"
+        tone-mapping="commerce"
         interaction-prompt="none"
         loading="lazy"
         reveal="auto"
