@@ -138,27 +138,17 @@ body.day .spotlight{background:radial-gradient(circle,rgba(255,200,150,.15) 0%,r
 .od3{bottom:0;left:50%;margin-left:-2px;background:var(--purp)}
 
 model-viewer{
-  width:340px;height:420px;
+  width:380px;height:480px;
   background:transparent;outline:none;z-index:5;
   --poster-color:transparent;
 }
 model-viewer::part(default-progress-bar){display:none}
 
-/* Info Ring — functional buttons */
-.ring-wrap{position:absolute;inset:0;pointer-events:none;z-index:20}
-.ring-btn{position:absolute;pointer-events:auto;display:flex;align-items:center;gap:5px;padding:6px 12px;background:rgba(10,10,10,.8);backdrop-filter:blur(16px);border:1px solid var(--bd);border-radius:100px;color:var(--t3);font-family:var(--f);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .3s;white-space:nowrap}
-body.day .ring-btn{background:rgba(255,248,240,.8)}
-.ring-btn:hover,.ring-btn.on{border-color:var(--gold);color:var(--gold);box-shadow:0 0 16px rgba(255,122,0,.06)}
-.ring-dot{width:3px;height:3px;border-radius:50%;background:currentColor}
-.ring-btn:nth-child(1){top:8%;left:50%;transform:translateX(-50%)}
-.ring-btn:nth-child(2){top:28%;right:4%}
-.ring-btn:nth-child(3){top:55%;right:2%}
-.ring-btn:nth-child(4){bottom:10%;left:50%;transform:translateX(-50%)}
-.ring-btn:nth-child(5){top:55%;left:2%}
-.ring-btn:nth-child(6){top:28%;left:4%}
+/* Info Ring — REMOVED: navigation lives in panels only */
+.ring-wrap{display:none}
 
 .prod-title{margin-top:6px;text-align:center;z-index:5}
-.prod-title h2{font-family:var(--fs);font-size:20px}
+.prod-title h2{font-family:var(--fs);font-size:22px}
 .prod-title p{font-size:8px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;margin-top:3px}
 
 /* === REWARDED QUESTIONS === */
@@ -167,6 +157,7 @@ body.day .ring-btn{background:rgba(255,248,240,.8)}
 .rq-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .rq-type{font-size:8px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
 .rq-badge{font-size:8px;color:var(--gold);padding:3px 10px;border-radius:100px;background:var(--gold-d);border:1px solid rgba(255,122,0,.12)}
+.rq-badge-reward{font-size:8px;padding:4px 12px;border-radius:100px;background:linear-gradient(135deg,rgba(255,122,0,.12),rgba(208,0,143,.12));border:1px solid rgba(255,122,0,.2);color:var(--gold);font-weight:500}
 .rq-q{font-family:var(--fs);font-size:15px;line-height:1.4;margin-bottom:12px}
 .rq-opts{display:flex;flex-direction:column;gap:5px}
 .rq-opt{padding:9px 12px;border-radius:var(--rs);border:1px solid var(--bd);background:var(--s2);color:var(--t2);font-family:var(--f);font-size:9px;cursor:pointer;transition:all .2s;text-align:left;display:flex;align-items:center;justify-content:space-between}
@@ -209,8 +200,10 @@ body.day .ring-btn{background:rgba(255,248,240,.8)}
 body.day .bottom{background:rgba(255,248,240,.7);border-top:1px solid rgba(0,0,0,.06)}
 .bot-btn{padding:7px 14px;border-radius:100px;border:1px solid var(--bd);background:transparent;color:var(--t3);font-family:var(--f);font-size:8px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .3s}
 .bot-btn:hover{border-color:var(--gold);color:var(--gold)}
-.bot-btn.hacka-btn{background:linear-gradient(135deg,rgba(208,0,143,.05),rgba(90,0,255,.05));border-color:rgba(208,0,143,.15);color:var(--mag)}
+.bot-btn.hacka-btn{padding:10px 28px;font-size:9px;letter-spacing:3px;background:var(--grad);color:#fff;border:none;font-weight:500;box-shadow:0 0 30px rgba(208,0,143,.15),0 0 60px rgba(90,0,255,.08);animation:hacka-glow 3s ease-in-out infinite}
+@keyframes hacka-glow{0%,100%{box-shadow:0 0 30px rgba(208,0,143,.15),0 0 60px rgba(90,0,255,.08)}50%{box-shadow:0 0 40px rgba(255,122,0,.2),0 0 80px rgba(208,0,143,.12)}}
 .bot-dot{width:3px;height:3px;border-radius:50%;background:currentColor}
+.bot-btn.hacka-btn .bot-dot{background:#fff}
 
 /* === hacKa DRAWER === */
 .hacka-overlay{position:fixed;inset:0;z-index:200;display:flex;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity .35s}
@@ -359,17 +352,18 @@ body.day .bottom{background:rgba(255,248,240,.7);border-top:1px solid rgba(0,0,0
         src="can.glb"
         camera-controls
         disable-pan
+        disable-zoom
         auto-rotate
         auto-rotate-delay="1500"
         rotation-per-second="12deg"
-        camera-orbit="0deg 78deg 2.4m"
-        min-camera-orbit="auto 60deg 2m"
-        max-camera-orbit="auto 90deg 3.2m"
-        camera-target="0m 0.02m 0m"
-        field-of-view="30deg"
+        camera-orbit="0deg 78deg 105%"
+        min-camera-orbit="auto 65deg auto"
+        max-camera-orbit="auto 90deg auto"
+        camera-target="0m 0.01m 0m"
+        field-of-view="28deg"
         shadow-intensity="1"
-        shadow-softness="0.7"
-        exposure="2.2"
+        shadow-softness="0.6"
+        exposure="2.5"
         environment-image="neutral"
         tone-mapping="commerce"
         interaction-prompt="none"
@@ -396,7 +390,7 @@ body.day .bottom{background:rgba(255,248,240,.7);border-top:1px solid rgba(0,0,0
     <div class="panel panel-r" id="panelR">
       <!-- Fair Trade Question — Cola Limão Launch -->
       <div class="card rq" id="rq-ftp">
-        <div class="rq-head"><span class="rq-type">Fair Trade Question</span><span class="rq-badge">🎁 12-Pack</span></div>
+        <div class="rq-head"><span class="rq-type">Fair Trade Question</span><span class="rq-badge-reward">🎁 Win a 12-Pack</span></div>
         <div class="rq-q">We're launching Cola Limão. What would make you try it?</div>
         <div class="rq-opts" id="rq-ftp-opts">
           <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>I'd try any new flavor from this brand</span><span class="rq-pts">🎁</span></button>
