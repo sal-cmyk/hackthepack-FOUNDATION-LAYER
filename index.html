@@ -396,21 +396,17 @@ body.day .bot-btn.hacka-btn{box-shadow:0 0 24px rgba(208,0,143,.12)}
     <!-- RIGHT PANEL -->
     <div class="panel panel-r" id="panelR">
       <!-- FAIR TRADE DEAL -->
-      <div class="card rq" id="rq-ftp" style="position:relative;overflow:hidden">
-        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)"></div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-          <span style="font-size:8px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gold)">🎁 Fair Trade Deal</span>
-          <span style="font-size:7px;padding:3px 8px;border-radius:100px;background:var(--gold-d);border:1px solid rgba(255,122,0,.12);color:var(--gold)">Win a 12-Pack</span>
-        </div>
-        <div style="font-family:var(--fs);font-size:14px;line-height:1.4;margin-bottom:12px">We're launching Cola Limão. What would make you try it?</div>
+      <div class="card rq" id="rq-ftp">
+        <div class="rq-head"><span class="rq-type">🎁 Fair Trade Deal</span><span class="rq-badge">Win a 12-Pack</span></div>
+        <div class="rq-q">What made you scan this cola today?</div>
         <div class="rq-opts" id="rq-ftp-opts">
-          <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>Brand loyalty — I'll try anything new</span><span class="rq-pts">🎁</span></button>
-          <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>A friend's recommendation</span><span class="rq-pts">🎁</span></button>
-          <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>Free sample with my purchase</span><span class="rq-pts">🎁</span></button>
-          <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>Seeing the ingredients first</span><span class="rq-pts">🎁</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>Checking ingredients</span><span class="rq-pts">🎁</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>Curious about the brand</span><span class="rq-pts">🎁</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>Looking for usage tips</span><span class="rq-pts">🎁</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>Just exploring</span><span class="rq-pts">🎁</span></button>
         </div>
         <div class="rq-skip" onclick="skipRQ('rq-ftp')">Decline — always optional</div>
-        <div class="rq-result" id="rq-ftp-result"><div class="rq-thx">You earned a reward!</div><div class="rq-earned">🎁 12-Pack</div><div class="rq-msg">Cola Limão 12-pack is yours.</div></div>
+        <div class="rq-result" id="rq-ftp-result"><div class="rq-thx">You earned a reward!</div><div class="rq-earned">🎁 12-Pack</div><div class="rq-msg">Cola Limão 12-pack is yours. Check your rewards.</div></div>
       </div>
 
       <!-- Rewarded Q1 -->
