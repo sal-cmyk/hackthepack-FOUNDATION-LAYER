@@ -7,11 +7,11 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#060606;--s2:#0e0e0e;--s3:#151515;
-  --bd:#1a1a1a;--bh:#2a2a2a;
-  --tx:#f0f0f0;--t2:#999;--t3:#555;
+  --bg:#0a0a0a;--s2:#111;--s3:#181818;
+  --bd:#222;--bh:#333;
+  --tx:#eee;--t2:#aaa;--t3:#666;
   --gold:#FF7A00;--mag:#D0008F;--purp:#5A00FF;
-  --gold-d:rgba(255,122,0,.06);
+  --gold-d:rgba(255,122,0,.07);
   --grad:linear-gradient(135deg,var(--gold),var(--mag),var(--purp));
   --r:14px;--rs:10px;
   --f:'DM Mono',monospace;--fs:'Instrument Serif',Georgia,serif;
@@ -74,12 +74,12 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);overflow:hidden;w
 #S4{flex-direction:row;transition:background .5s}
 
 /* Chrome */
-.chrome{position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:50;background:rgba(6,6,6,.7);backdrop-filter:blur(40px);border-bottom:1px solid rgba(255,255,255,.04);transition:all .5s}
-body.day .chrome{background:rgba(255,248,240,.7);border-bottom:1px solid rgba(0,0,0,.06)}
+.chrome{position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:50;background:rgba(10,10,10,.5);backdrop-filter:blur(30px);border-bottom:1px solid var(--bd);transition:all .5s}
+body.day .chrome{background:rgba(255,248,240,.6)}
 .chrome-brand{font-size:10px;font-weight:500;letter-spacing:4px;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.chrome-btns{display:flex;gap:8px}
-.chrome-btn{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--t2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;transition:all .3s}
-.chrome-btn:hover{border-color:var(--gold);color:var(--gold);background:rgba(255,122,0,.06)}
+.chrome-btns{display:flex;gap:5px}
+.chrome-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--bd);background:transparent;color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;transition:all .3s}
+.chrome-btn:hover{border-color:var(--gold);color:var(--gold)}
 
 /* Grid */
 .stage-grid{position:absolute;inset:50px 0 56px 0;display:grid;grid-template-columns:300px 1fr 300px;z-index:10}
@@ -90,7 +90,7 @@ body.day .chrome{background:rgba(255,248,240,.7);border-bottom:1px solid rgba(0,
 
 /* Cards */
 .card{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:18px;transition:all .3s;scroll-margin-top:16px}
-.card:hover{border-color:var(--bh);box-shadow:0 2px 20px rgba(0,0,0,.3)}
+.card:hover{border-color:var(--bh)}
 .card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .card-label{font-size:8px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--t3)}
 .tag{font-size:7px;padding:3px 9px;border-radius:100px;letter-spacing:1px;text-transform:uppercase}
@@ -124,8 +124,8 @@ body.day .chrome{background:rgba(255,248,240,.7);border-bottom:1px solid rgba(0,
 /* === CENTER — 3D VIEWER === */
 .center{display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;overflow:hidden}
 
-.spotlight{position:absolute;width:550px;height:550px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.05) 0%,rgba(255,122,0,.025) 25%,rgba(208,0,143,.01) 45%,transparent 65%);pointer-events:none;z-index:1}
-body.day .spotlight{background:radial-gradient(circle,rgba(255,200,150,.15) 0%,rgba(255,122,0,.05) 25%,transparent 55%)}
+.spotlight{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.04) 0%,rgba(255,122,0,.02) 30%,transparent 60%);pointer-events:none;z-index:1}
+body.day .spotlight{background:radial-gradient(circle,rgba(255,200,150,.12) 0%,rgba(255,122,0,.04) 30%,transparent 60%)}
 
 .orbit{position:absolute;border-radius:50%;pointer-events:none;z-index:1}
 .orbit-1{width:280px;height:280px;border:1px solid rgba(255,122,0,.06);animation:orb 22s linear infinite}
@@ -138,17 +138,27 @@ body.day .spotlight{background:radial-gradient(circle,rgba(255,200,150,.15) 0%,r
 .od3{bottom:0;left:50%;margin-left:-2px;background:var(--purp)}
 
 model-viewer{
-  width:380px;height:480px;
+  width:300px;height:360px;
   background:transparent;outline:none;z-index:5;
   --poster-color:transparent;
 }
 model-viewer::part(default-progress-bar){display:none}
 
-/* Info Ring — REMOVED: navigation lives in panels only */
-.ring-wrap{display:none}
+/* Info Ring — functional buttons */
+.ring-wrap{position:absolute;inset:0;pointer-events:none;z-index:20}
+.ring-btn{position:absolute;pointer-events:auto;display:flex;align-items:center;gap:5px;padding:6px 12px;background:rgba(10,10,10,.8);backdrop-filter:blur(16px);border:1px solid var(--bd);border-radius:100px;color:var(--t3);font-family:var(--f);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .3s;white-space:nowrap}
+body.day .ring-btn{background:rgba(255,248,240,.8)}
+.ring-btn:hover,.ring-btn.on{border-color:var(--gold);color:var(--gold);box-shadow:0 0 16px rgba(255,122,0,.06)}
+.ring-dot{width:3px;height:3px;border-radius:50%;background:currentColor}
+.ring-btn:nth-child(1){top:3%;left:50%;transform:translateX(-50%)}
+.ring-btn:nth-child(2){top:22%;right:1%}
+.ring-btn:nth-child(3){bottom:26%;right:-1%}
+.ring-btn:nth-child(4){bottom:6%;left:50%;transform:translateX(-50%)}
+.ring-btn:nth-child(5){bottom:26%;left:-1%}
+.ring-btn:nth-child(6){top:22%;left:1%}
 
 .prod-title{margin-top:6px;text-align:center;z-index:5}
-.prod-title h2{font-family:var(--fs);font-size:22px}
+.prod-title h2{font-family:var(--fs);font-size:20px}
 .prod-title p{font-size:8px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;margin-top:3px}
 
 /* === REWARDED QUESTIONS === */
@@ -157,7 +167,6 @@ model-viewer::part(default-progress-bar){display:none}
 .rq-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .rq-type{font-size:8px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
 .rq-badge{font-size:8px;color:var(--gold);padding:3px 10px;border-radius:100px;background:var(--gold-d);border:1px solid rgba(255,122,0,.12)}
-.rq-badge-reward{font-size:8px;padding:4px 12px;border-radius:100px;background:linear-gradient(135deg,rgba(255,122,0,.12),rgba(208,0,143,.12));border:1px solid rgba(255,122,0,.2);color:var(--gold);font-weight:500}
 .rq-q{font-family:var(--fs);font-size:15px;line-height:1.4;margin-bottom:12px}
 .rq-opts{display:flex;flex-direction:column;gap:5px}
 .rq-opt{padding:9px 12px;border-radius:var(--rs);border:1px solid var(--bd);background:var(--s2);color:var(--t2);font-family:var(--f);font-size:9px;cursor:pointer;transition:all .2s;text-align:left;display:flex;align-items:center;justify-content:space-between}
@@ -196,14 +205,12 @@ model-viewer::part(default-progress-bar){display:none}
 .rew-seg.filled{background:var(--gold)}
 
 /* === BOTTOM BAR — FUNCTIONAL === */
-.bottom{position:absolute;bottom:0;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:center;gap:8px;z-index:50;background:rgba(6,6,6,.7);backdrop-filter:blur(40px);border-top:1px solid rgba(255,255,255,.04);transition:all .5s}
-body.day .bottom{background:rgba(255,248,240,.7);border-top:1px solid rgba(0,0,0,.06)}
+.bottom{position:absolute;bottom:0;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:center;gap:8px;z-index:50;background:rgba(10,10,10,.5);backdrop-filter:blur(30px);border-top:1px solid var(--bd);transition:all .5s}
+body.day .bottom{background:rgba(255,248,240,.6)}
 .bot-btn{padding:7px 14px;border-radius:100px;border:1px solid var(--bd);background:transparent;color:var(--t3);font-family:var(--f);font-size:8px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .3s}
 .bot-btn:hover{border-color:var(--gold);color:var(--gold)}
-.bot-btn.hacka-btn{padding:10px 28px;font-size:9px;letter-spacing:3px;background:var(--grad);color:#fff;border:none;font-weight:500;box-shadow:0 0 30px rgba(208,0,143,.15),0 0 60px rgba(90,0,255,.08);animation:hacka-glow 3s ease-in-out infinite}
-@keyframes hacka-glow{0%,100%{box-shadow:0 0 30px rgba(208,0,143,.15),0 0 60px rgba(90,0,255,.08)}50%{box-shadow:0 0 40px rgba(255,122,0,.2),0 0 80px rgba(208,0,143,.12)}}
+.bot-btn.hacka-btn{background:linear-gradient(135deg,var(--gold),var(--mag),var(--purp));border:none;color:#fff;font-weight:500;padding:8px 20px;box-shadow:0 0 20px rgba(208,0,143,.15)}
 .bot-dot{width:3px;height:3px;border-radius:50%;background:currentColor}
-.bot-btn.hacka-btn .bot-dot{background:#fff}
 
 /* === hacKa DRAWER === */
 .hacka-overlay{position:fixed;inset:0;z-index:200;display:flex;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity .35s}
@@ -355,17 +362,15 @@ body.day .bottom{background:rgba(255,248,240,.7);border-top:1px solid rgba(0,0,0
         disable-zoom
         auto-rotate
         auto-rotate-delay="1500"
-        rotation-per-second="12deg"
-        camera-orbit="0deg 78deg 105%"
+        rotation-per-second="15deg"
+        camera-orbit="0deg 75deg 105%"
         min-camera-orbit="auto 65deg auto"
-        max-camera-orbit="auto 90deg auto"
-        camera-target="0m 0.01m 0m"
-        field-of-view="28deg"
-        shadow-intensity="1"
-        shadow-softness="0.6"
-        exposure="2.5"
+        max-camera-orbit="auto 85deg auto"
+        field-of-view="35deg"
+        shadow-intensity="0.7"
+        shadow-softness="0.9"
+        exposure="1.6"
         environment-image="neutral"
-        tone-mapping="commerce"
         interaction-prompt="none"
         loading="lazy"
         reveal="auto"
@@ -373,11 +378,11 @@ body.day .bottom{background:rgba(255,248,240,.7);border-top:1px solid rgba(0,0,0
 
       <div class="ring-wrap">
         <div class="ring-btn on" data-target="card-about"><span class="ring-dot"></span> About</div>
-        <div class="ring-btn" data-target="card-ingredients"><span class="ring-dot"></span> Ingredients</div>
         <div class="ring-btn" data-target="card-reviews"><span class="ring-dot"></span> Reviews</div>
         <div class="ring-btn" data-target="card-faq"><span class="ring-dot"></span> FAQ</div>
-        <div class="ring-btn" data-target="card-goodtoknow"><span class="ring-dot"></span> Good to Know</div>
         <div class="ring-btn" data-target="card-enjoy"><span class="ring-dot"></span> Enjoy</div>
+        <div class="ring-btn" data-target="card-goodtoknow"><span class="ring-dot"></span> Good to Know</div>
+        <div class="ring-btn" data-target="card-ingredients"><span class="ring-dot"></span> Ingredients</div>
       </div>
 
       <div class="prod-title">
@@ -388,18 +393,18 @@ body.day .bottom{background:rgba(255,248,240,.7);border-top:1px solid rgba(0,0,0
 
     <!-- RIGHT PANEL -->
     <div class="panel panel-r" id="panelR">
-      <!-- Fair Trade Question — Cola Limão Launch -->
+      <!-- Fair Trade Question -->
       <div class="card rq" id="rq-ftp">
-        <div class="rq-head"><span class="rq-type">Fair Trade Question</span><span class="rq-badge-reward">🎁 Win a 12-Pack</span></div>
-        <div class="rq-q">We're launching Cola Limão. What would make you try it?</div>
+        <div class="rq-head"><span class="rq-type">Fair Trade Question</span><span class="rq-badge">🤝 +10</span></div>
+        <div class="rq-q">What matters most about your data?</div>
         <div class="rq-opts" id="rq-ftp-opts">
-          <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>I'd try any new flavor from this brand</span><span class="rq-pts">🎁</span></button>
-          <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>A friend recommending it</span><span class="rq-pts">🎁</span></button>
-          <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>Free sample with my next purchase</span><span class="rq-pts">🎁</span></button>
-          <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>Seeing the ingredients first</span><span class="rq-pts">🎁</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-ftp',10)"><span>Full control over it</span><span class="rq-pts">+10</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-ftp',10)"><span>Transparency in how it's used</span><span class="rq-pts">+10</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-ftp',10)"><span>Getting fair value in return</span><span class="rq-pts">+10</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-ftp',10)"><span>Knowing it won't be exploited</span><span class="rq-pts">+10</span></button>
         </div>
         <div class="rq-skip" onclick="skipRQ('rq-ftp')">Skip — always optional</div>
-        <div class="rq-result" id="rq-ftp-result"><div class="rq-thx">You earned a reward!</div><div class="rq-earned">🎁 12-Pack</div><div class="rq-msg">A Cola Limão 12-pack is yours. Check your rewards.</div></div>
+        <div class="rq-result" id="rq-ftp-result"><div class="rq-thx">Thank you!</div><div class="rq-earned">+10</div><div class="rq-msg">We take your data rights seriously.</div></div>
       </div>
 
       <!-- Rewarded Q1 -->
@@ -461,8 +466,11 @@ body.day .bottom{background:rgba(255,248,240,.7);border-top:1px solid rgba(0,0,0
     </div>
   </div>
 
-  <!-- BOTTOM BAR — hacKa ONLY -->
+  <!-- BOTTOM BAR — ALL BUTTONS FUNCTIONAL -->
   <div class="bottom">
+    <button class="bot-btn" onclick="scrollToCard('card-ingredients','panelL')"><span class="bot-dot"></span> Ingredients</button>
+    <button class="bot-btn" onclick="scrollToCard('card-reviews','panelR')"><span class="bot-dot"></span> Reviews</button>
+    <button class="bot-btn" onclick="scrollToCard('card-faq','panelR')"><span class="bot-dot"></span> FAQ</button>
     <button class="bot-btn hacka-btn" id="openHackaBtn"><span class="bot-dot"></span> Talk to hacKa</button>
   </div>
 </div>
