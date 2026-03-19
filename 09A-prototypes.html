@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hackthepack — Section 09A: Prototypes</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--gold:#FF7A00;--mag:#D0008F;--purp:#5A00FF;--grad:linear-gradient(90deg,#FF7A00 0%,#D0008F 50%,#5A00FF 100%)}
+body{font-family:'DM Mono',monospace;background:#000;color:#fff;-webkit-font-smoothing:antialiased}
+.section{width:100%;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:52px 56px;position:relative;overflow:hidden}
+.sec-count{position:absolute;bottom:20px;left:28px;font-size:9px;color:#444;letter-spacing:2px}
+.dots-rail{position:absolute;right:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px}
+.rail-dot{width:5px;height:5px;border-radius:50%;background:#282828}.rail-dot.active{background:var(--gold)}
+.try-badge{position:absolute;bottom:16px;right:16px;background:var(--gold);color:#000;padding:8px 12px;font-size:9px;font-weight:500;letter-spacing:1px;text-align:center;line-height:1.3;cursor:pointer}.try-badge span{display:block;font-size:7px;color:rgba(0,0,0,.5)}
+
+.top{position:absolute;top:32px;left:56px;right:56px;display:flex;align-items:center;justify-content:space-between}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border:1px solid #282828;border-radius:100px;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#555}
+.chip-dot{width:4px;height:4px;border-radius:50%;background:var(--gold)}
+.sec-num{font-size:9px;letter-spacing:2px;color:#444;text-transform:uppercase}
+
+.content{text-align:center;max-width:940px;width:100%}
+.title{font-family:'Instrument Serif',Georgia,serif;font-size:52px;line-height:1.1;font-weight:400;margin-bottom:14px}
+.title span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{font-size:12px;color:#666;line-height:1.8;max-width:580px;margin:0 auto 44px}
+
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;width:100%}
+.card{background:#0a0a0a;border:1px solid #1e1e1e;border-radius:16px;padding:36px 28px;position:relative;overflow:hidden;cursor:pointer;transition:all .4s;text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;text-align:center}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;transition:height .3s}
+.card:nth-child(1)::before{background:var(--gold)}.card:nth-child(2)::before{background:var(--mag)}.card:nth-child(3)::before{background:var(--purp)}
+.card:hover::before{height:4px}
+.card:hover{border-color:#333;transform:translateY(-4px)}
+.card:nth-child(1):hover{box-shadow:0 12px 48px rgba(255,122,0,.06)}
+.card:nth-child(2):hover{box-shadow:0 12px 48px rgba(208,0,143,.06)}
+.card:nth-child(3):hover{box-shadow:0 12px 48px rgba(90,0,255,.06)}
+
+.card-icon{font-size:40px;margin-bottom:20px}
+.card-name{font-family:'Instrument Serif',Georgia,serif;font-size:26px;margin-bottom:5px}
+.card-cat{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#555;margin-bottom:18px}
+.card-desc{font-size:11px;color:#777;line-height:1.8;margin-bottom:24px}
+
+.card-cta{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border-radius:100px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;transition:all .3s}
+.card:nth-child(1) .card-cta{border:1px solid rgba(255,122,0,.25);color:var(--gold)}
+.card:nth-child(1):hover .card-cta{background:rgba(255,122,0,.08);border-color:rgba(255,122,0,.5)}
+.card:nth-child(2) .card-cta{border:1px solid rgba(208,0,143,.25);color:var(--mag)}
+.card:nth-child(2):hover .card-cta{background:rgba(208,0,143,.08);border-color:rgba(208,0,143,.5)}
+.card:nth-child(3) .card-cta{border:1px solid rgba(90,0,255,.25);color:var(--purp)}
+.card:nth-child(3):hover .card-cta{background:rgba(90,0,255,.08);border-color:rgba(90,0,255,.5)}
+.cta-arrow{font-size:13px;transition:transform .3s}.card:hover .cta-arrow{transform:translateX(4px)}
+
+.card-status{position:absolute;top:18px;right:18px;font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:100px}
+.card:nth-child(1) .card-status{background:rgba(255,122,0,.08);color:var(--gold);border:1px solid rgba(255,122,0,.15)}
+.card:nth-child(2) .card-status{background:rgba(208,0,143,.08);color:var(--mag);border:1px solid rgba(208,0,143,.15)}
+.card:nth-child(3) .card-status{background:rgba(90,0,255,.08);color:var(--purp);border:1px solid rgba(90,0,255,.15)}
+
+.bottom-line{position:absolute;bottom:32px;left:56px;right:56px;display:flex;align-items:center;justify-content:space-between}
+.bottom-brand{font-size:9px;color:#333;letter-spacing:3px;text-transform:uppercase}
+.bottom-inf{font-size:11px;color:#444}.bottom-inf span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'Instrument Serif',Georgia,serif;font-size:16px;margin-right:4px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.card{animation:fadeUp .7s ease forwards;opacity:0}
+.card:nth-child(1){animation-delay:.2s}.card:nth-child(2){animation-delay:.35s}.card:nth-child(3){animation-delay:.5s}
+
+@media(max-width:1024px){.section{padding:36px 24px;height:auto;min-height:100vh}.cards{grid-template-columns:1fr}.top,.bottom-line{left:24px;right:24px}.title{font-size:36px}}
+</style>
+</head>
+<body>
+
+<div class="section">
+  <div class="top">
+    <div class="chip"><span class="chip-dot"></span> Foundation Layer</div>
+    <span class="sec-num">Section 09A</span>
+  </div>
+
+  <div class="content">
+    <div class="title">Experience the <span>Prototypes.</span></div>
+    <div class="subtitle">Three product categories running the full Foundation Layer. Scan, explore, interact. Same architecture — every product, every category.</div>
+
+    <div class="cards">
+      <a class="card" href="index.html" target="_blank">
+        <span class="card-status">Live</span>
+        <div class="card-icon">🥤</div>
+        <div class="card-name">Hack Cola</div>
+        <div class="card-cat">Beverages</div>
+        <div class="card-desc">The original. Full ingredient transparency, rewarded questions, Fair Trade Deal, and hacKa intelligence — inside a single can.</div>
+        <div class="card-cta">Enter Experience <span class="cta-arrow">→</span></div>
+      </a>
+
+      <a class="card" href="htp-magic-shampoo.html" target="_blank">
+        <span class="card-status">Prototyped</span>
+        <div class="card-icon">🧴</div>
+        <div class="card-name">Magic Shampoo</div>
+        <div class="card-cat">Haircare</div>
+        <div class="card-desc">Surfactants, silicones, pH science — demystified. Every ingredient explained, every concern addressed, every scan rewarded.</div>
+        <div class="card-cta">Enter Experience <span class="cta-arrow">→</span></div>
+      </a>
+
+      <a class="card" href="htp-mind-accelerator.html" target="_blank">
+        <span class="card-status">Prototyped</span>
+        <div class="card-icon">🧠</div>
+        <div class="card-name">Mind Accelerator</div>
+        <div class="card-cat">Health & Wellness</div>
+        <div class="card-desc">Lion's Mane, Bacopa, L-Theanine — every compound transparent. Consent-first health data. Your brain, your rules.</div>
+        <div class="card-cta">Enter Experience <span class="cta-arrow">→</span></div>
+      </a>
+    </div>
+  </div>
+
+  <div class="bottom-line">
+    <span class="bottom-brand">hackthepack · Foundation Layer</span>
+    <div class="bottom-inf"><span>∞</span> categories possible</div>
+  </div>
+
+  <div class="sec-count">09A / 16</div>
+  <div class="dots-rail"><div class="rail-dot"></div><div class="rail-dot"></div><div class="rail-dot"></div><div class="rail-dot active"></div><div class="rail-dot"></div><div class="rail-dot"></div><div class="rail-dot"></div><div class="rail-dot"></div><div class="rail-dot"></div><div class="rail-dot"></div><div class="rail-dot"></div><div class="rail-dot"></div><div class="rail-dot"></div><div class="rail-dot"></div><div class="rail-dot"></div><div class="rail-dot"></div></div>
+  <div class="try-badge">TRY ME<span>HTP_09</span></div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hackthepack — Magic Shampoo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1e0620;--s2:#2a0e2e;--s3:#351638;
+  --bd:#4a2848;--bh:#6a3a68;
+  --tx:#f4e0f2;--t2:#d4a8d0;--t3:#a070a0;
+  --gold:#FF7A00;--mag:#D0008F;--purp:#5A00FF;
+  --mag-d:rgba(208,0,143,.12);
+  --grad:linear-gradient(135deg,var(--gold),var(--mag),var(--purp));
+  --r:14px;--rs:10px;
+  --f:'DM Mono',monospace;--fs:'Instrument Serif',Georgia,serif;
+}
+body.day{
+  --bg:#FFF0E6;--s2:#FFE8D6;--s3:#FFDFC4;
+  --bd:#F0B888;--bh:#E09868;
+  --tx:#2a1000;--t2:#7A4020;--t3:#A07050;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--f);background:var(--bg);color:var(--tx);overflow:hidden;width:100vw;height:100vh;-webkit-font-smoothing:antialiased;transition:all .5s}
+.scr{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column}.scr.on{display:flex}
+.logo{font-size:10px;font-weight:500;letter-spacing:5px;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:absolute;top:44px}
+#S1{cursor:pointer;background:#140418}
+.qf{width:180px;height:180px;position:relative;display:flex;align-items:center;justify-content:center}
+.qcr{position:absolute;width:22px;height:22px;border-style:solid}
+.qcr:nth-child(1){top:0;left:0;border-width:2px 0 0 2px;border-color:var(--mag)}.qcr:nth-child(2){top:0;right:0;border-width:2px 2px 0 0;border-color:var(--purp)}.qcr:nth-child(3){bottom:0;left:0;border-width:0 0 2px 2px;border-color:var(--purp)}.qcr:nth-child(4){bottom:0;right:0;border-width:0 2px 2px 0;border-color:var(--mag)}
+.qgrid{width:110px;height:110px;display:grid;grid-template-columns:repeat(8,1fr);gap:2px}
+.q1{border-radius:2px;background:var(--mag)}.q0{background:transparent}
+.qbeam{position:absolute;left:8px;right:8px;height:1px;background:linear-gradient(90deg,var(--mag),var(--purp),var(--mag));box-shadow:0 0 12px rgba(208,0,143,.25);animation:bm 2.5s ease-in-out infinite}
+@keyframes bm{0%,100%{top:8px;opacity:.5}50%{top:calc(100% - 8px);opacity:1}}
+.qlabel{margin-top:36px;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:#a070a0;animation:pu 3s ease-in-out infinite}
+@keyframes pu{0%,100%{opacity:.4}50%{opacity:1}}
+.dots{position:absolute;bottom:32px;display:flex;gap:6px}.dot{width:5px;height:5px;border-radius:50%;background:#4a2848}.dot.active{background:var(--mag)}
+#S2{background:#140418}
+.pact-box{width:400px;max-width:90vw}
+.pact-chip{display:inline-flex;align-items:center;gap:8px;padding:5px 13px;border:1px solid #4a2848;border-radius:100px;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#a070a0;margin-bottom:28px}
+.pact-pip{width:4px;height:4px;border-radius:50%;background:var(--mag)}
+.pact-h1{font-family:var(--fs);font-size:34px;line-height:1.2;margin-bottom:10px;color:#f4e0f2}
+.pact-sub{font-size:10px;color:#a070a0;line-height:1.7;margin-bottom:36px}
+.pact-list{display:flex;flex-direction:column;gap:18px;margin-bottom:40px}
+.pact-row{display:flex;gap:14px;align-items:flex-start}
+.pact-num{width:26px;height:26px;min-width:26px;border-radius:50%;border:1px solid #4a2848;display:flex;align-items:center;justify-content:center;font-size:9px;color:#a070a0}
+.pact-txt{font-size:11px;line-height:1.7;color:#a070a0}.pact-txt strong{color:#f4e0f2;font-weight:500}
+.accept-btn{width:100%;padding:15px;background:var(--mag);color:#fff;border:none;border-radius:var(--rs);font-family:var(--f);font-size:10px;font-weight:500;letter-spacing:3px;text-transform:uppercase;cursor:pointer}
+.pact-foot{text-align:center;margin-top:18px;font-size:8px;color:#6a3a68}
+#S3{background:var(--bg)}.load-wrap{display:flex;flex-direction:column;align-items:center;gap:20px}
+.load-ring{width:72px;height:72px;border-radius:50%;border:1px solid var(--bd);position:relative;display:flex;align-items:center;justify-content:center}
+.load-ring::before{content:'';position:absolute;inset:-2px;border-radius:50%;border:2px solid transparent;border-top-color:var(--mag);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}.load-text{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--t3)}
+#S4{flex-direction:row;transition:background .5s}
+.chrome{position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:50;background:rgba(30,6,32,.7);backdrop-filter:blur(30px);border-bottom:1px solid var(--bd);transition:all .5s}
+body.day .chrome{background:rgba(255,240,230,.6)}
+.chrome-brand{font-size:10px;font-weight:500;letter-spacing:4px;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.chrome-btns{display:flex;gap:5px}.chrome-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--bd);background:transparent;color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;transition:all .3s}.chrome-btn:hover{border-color:var(--mag);color:var(--mag)}
+.stage-grid{position:absolute;inset:50px 0 56px 0;display:grid;grid-template-columns:300px 1fr 300px;z-index:10}
+.panel{overflow-y:auto;padding:16px;scrollbar-width:none;display:flex;flex-direction:column;gap:10px}.panel::-webkit-scrollbar{display:none}
+.panel-l{border-right:1px solid var(--bd)}.panel-r{border-left:1px solid var(--bd)}
+.card{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:18px;transition:all .3s;scroll-margin-top:16px}.card:hover{border-color:var(--bh)}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-label{font-size:8px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--t3)}
+.tag{font-size:7px;padding:3px 9px;border-radius:100px;letter-spacing:1px;text-transform:uppercase}
+.tag-g{background:var(--mag-d);color:var(--mag);border:1px solid rgba(208,0,143,.2)}.tag-n{background:rgba(128,128,128,.08);color:var(--t2);border:1px solid var(--bd)}
+.card-body{font-size:10px;line-height:1.75;color:var(--t2)}
+.ingr{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd)}.ingr:last-child{border-bottom:none}
+.ingr-name{font-size:10px;color:var(--t2);display:flex;align-items:center;gap:8px}.ingr-dot{width:5px;height:5px;border-radius:50%;background:var(--mag);opacity:.7}
+.ingr-fn{font-size:8px;color:var(--t3);letter-spacing:1px;text-transform:uppercase}
+.gtn{padding:8px 0;border-bottom:1px solid var(--bd);font-size:10px;color:var(--t2);line-height:1.7}.gtn:last-child{border-bottom:none}
+.enjoy{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--bd);font-size:10px;color:var(--t2)}.enjoy:last-child{border-bottom:none}
+.enjoy-n{width:22px;height:22px;border-radius:50%;border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--mag);flex-shrink:0}
+.center{display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;overflow:hidden}
+.spotlight{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(208,0,143,.08) 0%,rgba(90,0,255,.04) 30%,transparent 60%);pointer-events:none;z-index:1}
+body.day .spotlight{background:radial-gradient(circle,rgba(255,180,120,.1) 0%,rgba(255,122,0,.04) 30%,transparent 60%)}
+.orbit{position:absolute;border-radius:50%;pointer-events:none;z-index:1}
+.orbit-1{width:280px;height:280px;border:1px solid rgba(208,0,143,.1);animation:orb 22s linear infinite}
+.orbit-2{width:350px;height:350px;border:1px solid rgba(90,0,255,.06);animation:orb 30s linear infinite reverse}
+.orbit-3{width:420px;height:420px;border:1px solid rgba(208,0,143,.04);animation:orb 38s linear infinite}
+@keyframes orb{to{transform:rotate(360deg)}}
+.orb-dot{position:absolute;width:5px;height:5px;border-radius:50%;filter:blur(.5px)}
+.od1{top:0;left:50%;margin-left:-2px;background:var(--mag)}.od2{top:50%;right:0;margin-top:-2px;background:var(--purp)}.od3{bottom:0;left:50%;margin-left:-2px;background:var(--mag)}
+model-viewer{width:300px;height:360px;background:transparent;outline:none;z-index:5;--poster-color:transparent}
+model-viewer::part(default-progress-bar){display:none}
+.ring-wrap{position:absolute;inset:0;pointer-events:none;z-index:20}
+.ring-btn{position:absolute;pointer-events:auto;display:flex;align-items:center;gap:5px;padding:6px 12px;background:rgba(30,6,32,.8);backdrop-filter:blur(16px);border:1px solid var(--bd);border-radius:100px;color:var(--t3);font-family:var(--f);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .3s;white-space:nowrap}
+body.day .ring-btn{background:rgba(255,240,230,.8)}
+.ring-btn:hover,.ring-btn.on{border-color:var(--mag);color:var(--mag);box-shadow:0 0 16px rgba(208,0,143,.1)}
+.ring-dot{width:3px;height:3px;border-radius:50%;background:currentColor}
+.ring-btn:nth-child(1){top:5%;left:50%;transform:translateX(-50%)}.ring-btn:nth-child(2){top:20%;right:2%}.ring-btn:nth-child(3){bottom:35%;right:0%}.ring-btn:nth-child(4){top:45%;left:0%}.ring-btn:nth-child(5){bottom:15%;left:0%}.ring-btn:nth-child(6){top:20%;left:2%}
+.prod-title{margin-top:6px;text-align:center;z-index:5}.prod-title h2{font-family:var(--fs);font-size:20px}.prod-title p{font-size:8px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;margin-top:3px}
+/* RQ */
+.rq{position:relative;overflow:hidden}.rq::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad)}
+.rq-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.rq-type{font-size:8px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--mag)}
+.rq-badge{font-size:8px;color:var(--mag);padding:3px 10px;border-radius:100px;background:var(--mag-d);border:1px solid rgba(208,0,143,.2)}
+.rq-q{font-family:var(--fs);font-size:15px;line-height:1.4;margin-bottom:12px}
+.rq-opts{display:flex;flex-direction:column;gap:5px}
+.rq-opt{padding:9px 12px;border-radius:var(--rs);border:1px solid var(--bd);background:var(--s2);color:var(--t2);font-family:var(--f);font-size:9px;cursor:pointer;transition:all .2s;text-align:left;display:flex;align-items:center;justify-content:space-between}
+.rq-opt:hover{border-color:var(--mag);color:var(--mag);background:rgba(208,0,143,.08)}
+.rq-pts{font-size:7px;color:var(--t3)}.rq-opt:hover .rq-pts{color:var(--mag)}
+.rq-skip{font-size:8px;color:var(--t3);margin-top:8px;text-align:center;cursor:pointer}
+.rq-result{display:none;text-align:center;padding:12px 0}
+.rq-thx{font-size:9px;color:var(--t2);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.rq-earned{font-size:28px;font-family:var(--fs);background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.rq-msg{font-size:9px;color:var(--t3);margin-top:4px}
+/* FAQ */
+.faq{padding:9px 0;border-bottom:1px solid var(--bd);cursor:pointer}.faq:last-child{border-bottom:none}
+.faq-q{font-size:10px;font-weight:500;display:flex;align-items:flex-start;gap:7px}
+.faq-q::before{content:'?';display:flex;align-items:center;justify-content:center;min-width:16px;height:16px;border-radius:50%;border:1px solid var(--bd);font-size:8px;color:var(--mag)}
+.faq-a{font-size:9px;color:var(--t3);line-height:1.7;padding-left:23px;max-height:0;overflow:hidden;transition:max-height .4s,opacity .3s;opacity:0}
+.faq.open .faq-a{max-height:200px;opacity:1;color:var(--t2)}
+.rev{padding:9px 0;border-bottom:1px solid var(--bd)}.rev:last-child{border-bottom:none}
+.rev-top{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.rev-av{width:22px;height:22px;border-radius:50%;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:500;color:var(--mag);border:1px solid var(--bd)}
+.rev-name{font-size:9px;font-weight:500}.rev-stars{font-size:8px;color:var(--mag)}
+.rev-body{font-size:9px;color:var(--t3);line-height:1.5;padding-left:30px}
+.rew-row{display:flex;align-items:baseline;gap:6px;margin-bottom:8px}
+.rew-num{font-family:var(--fs);font-size:28px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.rew-unit{font-size:8px;color:var(--t3);letter-spacing:2px;text-transform:uppercase}
+.rew-bar{display:flex;gap:2px}.rew-seg{flex:1;height:3px;border-radius:2px;background:var(--bd)}.rew-seg.filled{background:var(--mag)}
+.bottom{position:absolute;bottom:0;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:center;gap:8px;z-index:50;background:rgba(30,6,32,.7);backdrop-filter:blur(30px);border-top:1px solid var(--bd);transition:all .5s}
+body.day .bottom{background:rgba(255,240,230,.6)}
+.bot-btn{padding:7px 14px;border-radius:100px;border:1px solid var(--bd);background:transparent;color:var(--t3);font-family:var(--f);font-size:8px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .3s}.bot-btn:hover{border-color:var(--mag);color:var(--mag)}
+.bot-btn.hacka-btn{background:linear-gradient(135deg,var(--gold),var(--mag),var(--purp));border:none;color:#fff;font-weight:500;padding:8px 20px;box-shadow:0 0 20px rgba(208,0,143,.2)}
+.bot-dot{width:3px;height:3px;border-radius:50%;background:currentColor}
+/* hacKa */
+.hacka-overlay{position:fixed;inset:0;z-index:200;display:flex;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity .35s}.hacka-overlay.open{opacity:1;pointer-events:auto}
+.hacka-bg{position:absolute;inset:0;background:rgba(20,4,24,.6);backdrop-filter:blur(8px)}
+.hacka-drawer{position:relative;width:360px;max-width:95vw;height:100vh;background:#1a0620;border-left:1px solid #4a2848;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .5s;z-index:1}
+.hacka-overlay.open .hacka-drawer{transform:translateX(0)}
+.hacka-top{padding:16px;border-bottom:1px solid #4a2848;display:flex;align-items:center;justify-content:space-between}
+.hacka-id{display:flex;align-items:center;gap:10px}
+.hacka-av{width:34px;height:34px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#fff}
+.hacka-nm h3{font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:#f4e0f2}.hacka-nm p{font-size:7px;color:#6a3a68;margin-top:1px}
+.hacka-mode{font-size:7px;padding:3px 7px;border-radius:100px;border:1px solid rgba(208,0,143,.25);color:var(--mag);background:rgba(208,0,143,.1)}
+.hacka-close{width:24px;height:24px;border-radius:50%;border:1px solid #4a2848;background:transparent;color:#a070a0;cursor:pointer;font-size:12px;font-family:var(--f);display:flex;align-items:center;justify-content:center}
+.hacka-chat{flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;scrollbar-width:none}.hacka-chat::-webkit-scrollbar{display:none}
+.msg{max-width:88%;padding:10px 13px;border-radius:var(--r);font-size:10px;line-height:1.7}
+.msg-h{background:#2a0e2e;border:1px solid #4a2848;color:#d4a8d0;align-self:flex-start;border-bottom-left-radius:3px}
+.msg-u{background:rgba(208,0,143,.12);border:1px solid rgba(208,0,143,.2);color:var(--mag);align-self:flex-end;border-bottom-right-radius:3px}
+.hacka-sug{display:flex;flex-wrap:wrap;gap:4px;padding:0 16px 6px}
+.sug{padding:5px 9px;border-radius:100px;border:1px solid #4a2848;background:transparent;color:#a070a0;font-family:var(--f);font-size:7px;cursor:pointer}.sug:hover{border-color:var(--mag);color:var(--mag)}
+.hacka-input-row{padding:10px 16px 16px;border-top:1px solid #4a2848;display:flex;gap:6px}
+.hacka-input{flex:1;padding:9px 11px;background:#2a0e2e;border:1px solid #4a2848;border-radius:var(--rs);color:#f4e0f2;font-family:var(--f);font-size:9px;outline:none}.hacka-input:focus{border-color:var(--mag)}
+.hacka-send{width:36px;height:36px;border-radius:var(--rs);background:var(--mag);border:none;color:#fff;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center}
+.typing{display:flex;gap:3px}.typing span{width:4px;height:4px;background:#6a3a68;border-radius:50%;animation:tb 1.2s ease-in-out infinite}.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+@keyframes tb{0%,100%{opacity:.3}50%{opacity:1}}
+@keyframes highlight{0%{box-shadow:0 0 0 2px var(--mag)}100%{box-shadow:none}}.card.highlighted{animation:highlight 1.5s ease}
+body.day .card{background:rgba(255,230,210,.7);border-color:rgba(208,0,143,.12)}
+body.day .card:hover{border-color:rgba(208,0,143,.3);box-shadow:0 2px 16px rgba(208,0,143,.06)}
+body.day .rq-opt:hover{background:rgba(208,0,143,.08);border-color:rgba(208,0,143,.3)}
+body.day .bot-btn.hacka-btn{box-shadow:0 0 24px rgba(208,0,143,.15)}
+@media(max-width:1024px){.stage-grid{grid-template-columns:1fr;overflow-y:auto}.panel-l,.panel-r{border:none}.center{min-height:460px;order:-1}.ring-wrap{display:none}}
+</style>
+</head>
+<body>
+<div class="scr on" id="S1"><span class="logo">hackthepack</span><div class="qf"><div class="qcr"></div><div class="qcr"></div><div class="qcr"></div><div class="qcr"></div><div class="qgrid" id="qgrid"></div><div class="qbeam"></div></div><div class="qlabel">scan to begin</div><div class="dots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
+<div class="scr" id="S2"><span class="logo">hackthepack</span><div class="pact-box"><div class="pact-chip"><span class="pact-pip"></span> Fair Trade Pact</div><div class="pact-h1">Our commitment<br>to you.</div><div class="pact-sub">Before we begin, here's what we promise.</div><div class="pact-list"><div class="pact-row"><div class="pact-num">01</div><div class="pact-txt"><strong>Your data belongs to you.</strong> View, export, delete anytime.</div></div><div class="pact-row"><div class="pact-num">02</div><div class="pact-txt"><strong>Full transparency.</strong> Every ingredient verified.</div></div><div class="pact-row"><div class="pact-num">03</div><div class="pact-txt"><strong>Fair value exchange.</strong> Insights earn rewards.</div></div><div class="pact-row"><div class="pact-num">04</div><div class="pact-txt"><strong>Ethical intelligence.</strong> Never manipulation.</div></div></div><button class="accept-btn" id="acceptBtn">I Accept</button><div class="pact-foot">Manage your data at any time.</div></div><div class="dots"><div class="dot active"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div></div>
+<div class="scr" id="S3"><div class="load-wrap"><div class="load-ring"><span style="font-size:22px">🧴</span></div><div class="load-text">Activating product</div></div></div>
+<div class="scr" id="S4">
+  <div class="chrome"><span class="chrome-brand">hackthepack</span><div class="chrome-btns"><button class="chrome-btn">🌐</button><button class="chrome-btn" id="modeBtn">☀️</button><button class="chrome-btn">↗</button><button class="chrome-btn">✕</button></div></div>
+  <div class="stage-grid">
+    <div class="panel panel-l" id="panelL">
+      <div class="card" id="card-about"><div class="card-head"><span class="card-label">About this product</span></div><div class="card-body">A premium hair-cleansing experience. Sulfate-balanced surfactants create a rich lather that lifts oil and buildup, while conditioning agents leave every strand smooth, protected, and luminous. pH-balanced for all hair types.</div></div>
+      <div class="card" id="card-ingredients"><div class="card-head"><span class="card-label">What's inside</span><span class="tag tag-g">Verified</span></div><div class="ingr"><span class="ingr-name"><span class="ingr-dot"></span> Water (Aqua)</span><span class="ingr-fn">Base</span></div><div class="ingr"><span class="ingr-name"><span class="ingr-dot"></span> Surfactants (SLS/SLES)</span><span class="ingr-fn">Cleansing</span></div><div class="ingr"><span class="ingr-name"><span class="ingr-dot"></span> Dimethicone</span><span class="ingr-fn">Smoothing</span></div><div class="ingr"><span class="ingr-name"><span class="ingr-dot"></span> Foam Boosters</span><span class="ingr-fn">Lather</span></div><div class="ingr"><span class="ingr-name"><span class="ingr-dot"></span> Preservatives</span><span class="ingr-fn">Safety</span></div><div class="ingr"><span class="ingr-name"><span class="ingr-dot"></span> Fragrance</span><span class="ingr-fn">Aroma</span></div><div class="ingr"><span class="ingr-name"><span class="ingr-dot"></span> Thickeners</span><span class="ingr-fn">Texture</span></div><div class="ingr"><span class="ingr-name"><span class="ingr-dot"></span> Citric Acid</span><span class="ingr-fn">pH Balance</span></div></div>
+      <div class="card" id="card-goodtoknow"><div class="card-head"><span class="card-label">Good to know</span></div><div class="gtn">Sulfate-free doesn't mean better — it depends on your hair type.</div><div class="gtn">Silicones protect hair but need periodic deep cleansing.</div><div class="gtn">pH-balanced formulas keep your cuticle smooth and strong.</div></div>
+      <div class="card" id="card-enjoy"><div class="card-head"><span class="card-label">Best way to use</span></div><div class="enjoy"><div class="enjoy-n">01</div><span>Wet hair thoroughly with warm water</span></div><div class="enjoy"><div class="enjoy-n">02</div><span>Apply 1–2 coin-sized portions to scalp</span></div><div class="enjoy"><div class="enjoy-n">03</div><span>Massage gently for 30 seconds</span></div><div class="enjoy"><div class="enjoy-n">04</div><span>Rinse with cool water to seal cuticle</span></div></div>
+    </div>
+    <div class="center">
+      <div class="spotlight"></div><div class="orbit orbit-1"><div class="orb-dot od1"></div></div><div class="orbit orbit-2"><div class="orb-dot od2"></div></div><div class="orbit orbit-3"><div class="orb-dot od3"></div></div>
+      <model-viewer src="shampoo.glb" camera-controls disable-pan disable-zoom auto-rotate auto-rotate-delay="1500" rotation-per-second="15deg" camera-orbit="0deg 75deg 105%" min-camera-orbit="auto 65deg auto" max-camera-orbit="auto 85deg auto" field-of-view="35deg" shadow-intensity="0.7" shadow-softness="0.9" exposure="2.4" environment-image="neutral" interaction-prompt="none" loading="lazy" reveal="auto"></model-viewer>
+      <div class="ring-wrap"><div class="ring-btn on" data-target="card-about"><span class="ring-dot"></span> About</div><div class="ring-btn" data-target="card-faq"><span class="ring-dot"></span> FAQ</div><div class="ring-btn" data-target="card-reviews"><span class="ring-dot"></span> Reviews</div><div class="ring-btn" data-target="card-goodtoknow"><span class="ring-dot"></span> Good to Know</div><div class="ring-btn" data-target="card-enjoy"><span class="ring-dot"></span> How to Use</div><div class="ring-btn" data-target="card-ingredients"><span class="ring-dot"></span> Ingredients</div></div>
+      <div class="prod-title"><h2>Magic Shampoo</h2><p>300ml · Scan & Activate</p></div>
+    </div>
+    <div class="panel panel-r" id="panelR">
+      <!-- FAIR TRADE DEAL — same pattern as Cola -->
+      <div class="card rq" id="rq-ftp" style="position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><span style="font-size:8px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--mag)">🎁 Fair Trade Deal</span><span style="font-size:7px;padding:3px 8px;border-radius:100px;background:var(--mag-d);border:1px solid rgba(208,0,143,.2);color:var(--mag)">Win a Sample Kit</span></div>
+        <div style="font-family:var(--fs);font-size:14px;line-height:1.4;margin-bottom:12px">We're launching Sulfate-Free. What matters most to you?</div>
+        <div class="rq-opts" id="rq-ftp-opts">
+          <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>Gentle formula for daily use</span><span class="rq-pts">🎁</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>Color protection above all</span><span class="rq-pts">🎁</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>Natural ingredients I recognize</span><span class="rq-pts">🎁</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-ftp',50)"><span>Same lather, just no sulfates</span><span class="rq-pts">🎁</span></button>
+        </div>
+        <div class="rq-skip" onclick="skipRQ('rq-ftp')">Decline — always optional</div>
+        <div class="rq-result" id="rq-ftp-result"><div class="rq-thx">You earned a reward!</div><div class="rq-earned">🎁 Sample Kit</div><div class="rq-msg">Sulfate-Free sample kit is yours.</div></div>
+      </div>
+      <!-- Rewarded Q1: +15 -->
+      <div class="card rq" id="rq-lather">
+        <div class="rq-head"><span class="rq-type">Rewarded Question</span><span class="rq-badge">⭐ +15</span></div>
+        <div class="rq-q">Which is more important: fast lather or gentle natural formula?</div>
+        <div class="rq-opts" id="rq-lather-opts">
+          <button class="rq-opt" onclick="answerRQ('rq-lather',15)"><span>Fast, rich lather</span><span class="rq-pts">+15</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-lather',15)"><span>Gentle natural formula</span><span class="rq-pts">+15</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-lather',15)"><span>Depends on the day</span><span class="rq-pts">+15</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-lather',15)"><span>Never thought about it</span><span class="rq-pts">+15</span></button>
+        </div>
+        <div class="rq-skip" onclick="skipRQ('rq-lather')">Skip — always optional</div>
+        <div class="rq-result" id="rq-lather-result"><div class="rq-thx">Thank you!</div><div class="rq-earned">+15</div><div class="rq-msg">Your insight improves this product.</div></div>
+      </div>
+      <!-- Rewarded Q2: +20 -->
+      <div class="card rq" id="rq-concern">
+        <div class="rq-head"><span class="rq-type">Rewarded Question</span><span class="rq-badge">⭐ +20</span></div>
+        <div class="rq-q">What's your biggest hair concern right now?</div>
+        <div class="rq-opts" id="rq-concern-opts">
+          <button class="rq-opt" onclick="answerRQ('rq-concern',20)"><span>Frizz control</span><span class="rq-pts">+20</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-concern',20)"><span>Volume & body</span><span class="rq-pts">+20</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-concern',20)"><span>Damage repair</span><span class="rq-pts">+20</span></button>
+          <button class="rq-opt" onclick="answerRQ('rq-concern',20)"><span>Color fade protection</span><span class="rq-pts">+20</span></button>
+        </div>
+        <div class="rq-skip" onclick="skipRQ('rq-concern')">Skip — always optional</div>
+        <div class="rq-result" id="rq-concern-result"><div class="rq-thx">Thank you!</div><div class="rq-earned">+20</div><div class="rq-msg">Helps us address real concerns.</div></div>
+      </div>
+      <!-- LET'S PLAY -->
+      <div class="card" id="card-play" style="position:relative;overflow:hidden;cursor:pointer" onclick="var c=document.getElementById('playContent');if(c.style.display==='block'){c.style.display='none'}else{c.style.display='block'}"><div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(135deg,var(--mag),var(--purp))"></div><div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:8px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--mag)">🎮 Let's Play</span><span style="font-size:7px;padding:3px 8px;border-radius:100px;background:var(--mag-d);border:1px solid rgba(208,0,143,.2);color:var(--mag)">Gamification</span></div><div id="playContent" style="display:none;margin-top:14px"><div style="font-family:var(--fs);font-size:14px;line-height:1.4;margin-bottom:10px">Unlock a hair diagnostic inside this pack.</div><div style="padding:16px;border-radius:var(--rs);border:1px dashed var(--bd);text-align:center"><div style="font-size:28px;margin-bottom:8px">📱</div><div style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--mag)">Point camera at bottle</div><div style="font-size:7px;color:var(--t3);margin-top:4px">AR · Coming soon</div></div></div></div>
+      <!-- My Rewards -->
+      <div class="card" id="card-rewards"><div class="card-head"><span class="card-label">My Rewards</span><span class="tag tag-g">Active</span></div><div class="rew-row"><span class="rew-num" id="pointsDisplay">420</span><span class="rew-unit">points</span></div><div class="rew-bar"><div class="rew-seg filled"></div><div class="rew-seg filled"></div><div class="rew-seg filled"></div><div class="rew-seg filled"></div><div class="rew-seg"></div><div class="rew-seg"></div><div class="rew-seg"></div><div class="rew-seg"></div><div class="rew-seg"></div><div class="rew-seg"></div></div><div style="font-size:8px;color:var(--t3);margin-top:8px">80 points to next reward</div></div>
+      <!-- FAQ -->
+      <div class="card" id="card-faq"><div class="card-head"><span class="card-label">FAQ</span><span class="tag tag-n">5</span></div><div class="faq" onclick="this.classList.toggle('open')"><div class="faq-q">Does sulfate-free clean as well?</div><div class="faq-a">Sulfate-free uses milder surfactants. Effective for most — oily hair may still need sulfates.</div></div><div class="faq" onclick="this.classList.toggle('open')"><div class="faq-q">Is hair loss normal when switching?</div><div class="faq-a">Temporary shedding can happen. Scalp adjusts in 2–4 weeks.</div></div><div class="faq" onclick="this.classList.toggle('open')"><div class="faq-q">Should I avoid parabens & silicones?</div><div class="faq-a">Both safe at regulated levels. Silicones protect; just deep-cleanse occasionally.</div></div><div class="faq" onclick="this.classList.toggle('open')"><div class="faq-q">How often should I wash?</div><div class="faq-a">Oily: daily. Dry/curly: 2–3× per week. Listen to your hair.</div></div><div class="faq" onclick="this.classList.toggle('open')"><div class="faq-q">Best for colored or damaged hair?</div><div class="faq-a">Sulfate-free, pH-balanced with conditioning agents. Locks pigment, reduces fade.</div></div></div>
+      <!-- Reviews -->
+      <div class="card" id="card-reviews"><div class="card-head"><span class="card-label">Reviews</span><span class="tag tag-n">1,240+</span></div><div class="rev"><div class="rev-top"><div class="rev-av">C</div><div><span class="rev-name">Camila R.</span><br><span class="rev-stars">★★★★★</span></div></div><div class="rev-body">Finally a shampoo that explains what's in it. Never felt this smooth.</div></div><div class="rev"><div class="rev-top"><div class="rev-av">M</div><div><span class="rev-name">Marcus T.</span><br><span class="rev-stars">★★★★☆</span></div></div><div class="rev-body">Love the ingredient transparency. Incredible lather.</div></div><div class="rev"><div class="rev-top"><div class="rev-av">S</div><div><span class="rev-name">Sofia L.</span><br><span class="rev-stars">★★★★★</span></div></div><div class="rev-body">pH balance makes a real difference. Shinier after 2 weeks.</div></div></div>
+    </div>
+  </div>
+  <div class="bottom"><button class="bot-btn" onclick="scrollToCard('card-ingredients')"><span class="bot-dot"></span> Ingredients</button><button class="bot-btn" onclick="scrollToCard('card-reviews')"><span class="bot-dot"></span> Reviews</button><button class="bot-btn" onclick="scrollToCard('card-faq')"><span class="bot-dot"></span> FAQ</button><button class="bot-btn hacka-btn" id="openHackaBtn"><span class="bot-dot"></span> Talk to hacKa</button></div>
+</div>
+<div class="hacka-overlay" id="hackaOverlay"><div class="hacka-bg" id="hackaBg"></div><div class="hacka-drawer"><div class="hacka-top"><div class="hacka-id"><div class="hacka-av">h</div><div class="hacka-nm"><h3>hacKa</h3><p>Haircare Intelligence</p></div></div><div style="display:flex;align-items:center;gap:6px"><span class="hacka-mode">Guide</span><button class="hacka-close" id="closeHackaBtn">✕</button></div></div><div class="hacka-chat" id="hackaChat"><div class="msg msg-h">Hi! I'm hacKa, your haircare companion. I can explain any ingredient, help you understand your hair type, or answer anything about this product. What would you like to know?</div></div><div class="hacka-sug"><button class="sug" onclick="askHacka('sulfates')">What are sulfates?</button><button class="sug" onclick="askHacka('silicones')">Are silicones bad?</button><button class="sug" onclick="askHacka('ph')">Why pH matters</button><button class="sug" onclick="askHacka('color')">Color protection</button></div><div class="hacka-input-row"><input class="hacka-input" id="hackaInput" placeholder="Ask hacKa anything..."><button class="hacka-send" id="hackaSendBtn">→</button></div></div></div>
+<script>
+function goTo(id){var s=document.querySelectorAll('.scr');for(var i=0;i<s.length;i++)s[i].classList.remove('on');document.getElementById(id).classList.add('on')}
+document.getElementById('S1').onclick=function(){goTo('S2')};
+document.getElementById('acceptBtn').onclick=function(e){e.stopPropagation();goTo('S3');setTimeout(function(){goTo('S4')},1800)};
+var qg=document.getElementById('qgrid');[1,0,1,1,0,1,0,1,0,1,1,0,1,0,1,1,1,1,0,1,0,1,1,0,0,1,0,1,1,0,1,1,1,0,1,0,1,1,0,0,0,1,1,0,1,0,1,1,1,0,1,1,0,1,1,0,0,1,0,1,1,1,0,1].forEach(function(v){var c=document.createElement('div');c.className=v?'q1':'q0';qg.appendChild(c)});
+var isDark=false;document.body.classList.add('day');document.getElementById('modeBtn').textContent='🌙';
+document.getElementById('modeBtn').onclick=function(){isDark=!isDark;document.body.classList.toggle('day');this.textContent=isDark?'☀️':'🌙'};
+var ringBtns=document.querySelectorAll('.ring-btn');for(var i=0;i<ringBtns.length;i++){ringBtns[i].onclick=function(){for(var j=0;j<ringBtns.length;j++)ringBtns[j].classList.remove('on');this.classList.add('on');var t=this.getAttribute('data-target');var el=document.getElementById(t);if(el){el.classList.add('highlighted');el.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){el.classList.remove('highlighted')},1500)}}}
+function scrollToCard(c){var el=document.getElementById(c);if(el){el.classList.add('highlighted');el.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){el.classList.remove('highlighted')},1500)}}
+var totalPoints=420;
+function answerRQ(id,pts){document.getElementById(id+'-opts').style.display='none';var sk=document.querySelector('#'+id+' .rq-skip');if(sk)sk.style.display='none';document.getElementById(id+'-result').style.display='block';totalPoints+=pts;document.getElementById('pointsDisplay').textContent=totalPoints}
+function skipRQ(id){document.getElementById(id).style.opacity='.3';document.getElementById(id).style.pointerEvents='none'}
+document.getElementById('openHackaBtn').onclick=function(){document.getElementById('hackaOverlay').classList.add('open')};
+document.getElementById('closeHackaBtn').onclick=function(){document.getElementById('hackaOverlay').classList.remove('open')};
+document.getElementById('hackaBg').onclick=function(){document.getElementById('hackaOverlay').classList.remove('open')};
+var knowledge={sulfates:"Foaming powerhouses. Sulfates create that rich, satisfying lather that cuts right through oil and buildup. If your hair is color-treated or naturally dry, consider sulfate-free. Otherwise, they're doing exactly what they're supposed to do.",silicones:"Think of silicones as your hair's protective gloss coat. They smooth each strand, creating sleek shine and frizz control. The key is periodic deep cleansing — a clarifying wash every 2–3 weeks prevents buildup. They don't damage hair; they armor it.",ph:"Citric Acid keeps this shampoo slightly acidic (around pH 5.5), which is your hair cuticle's happy place. When the cuticle lies flat, light bounces off evenly — that's what 'shine' actually is. Alkaline products lift the cuticle, causing frizz and breakage.",color:"Color-treated hair needs: sulfate-free cleansing (sulfates strip pigment), UV protection (sunlight fades color), and cool water rinses (hot water releases dye molecules). Wash every 2–3 days for color longevity."};
+function askHacka(key){addMsg(key,'msg-u');showTyping(function(){addMsg(knowledge[key]||"Every ingredient serves a specific purpose. Want me to break down something specific?",'msg-h')})}
+document.getElementById('hackaSendBtn').onclick=sendUserMsg;document.getElementById('hackaInput').onkeydown=function(e){if(e.key==='Enter')sendUserMsg()};
+function sendUserMsg(){var f=document.getElementById('hackaInput');var t=f.value.trim();if(!t)return;f.value='';addMsg(t,'msg-u');showTyping(function(){addMsg("Great question. Each ingredient works in balance — surfactants for cleansing, conditioning agents for smoothness, pH adjusters for cuticle health. Want me to go deeper into any specific one?",'msg-h')})}
+function addMsg(t,c){var ch=document.getElementById('hackaChat');var m=document.createElement('div');m.className='msg '+c;m.textContent=t;ch.appendChild(m);ch.scrollTop=ch.scrollHeight}
+function showTyping(cb){var ch=document.getElementById('hackaChat');var i=document.createElement('div');i.className='msg msg-h';i.innerHTML='<div class="typing"><span></span><span></span><span></span></div>';ch.appendChild(i);ch.scrollTop=ch.scrollHeight;setTimeout(function(){i.remove();cb()},1200)}
+</script>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+</body>
+</html>
